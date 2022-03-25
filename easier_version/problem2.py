@@ -9,7 +9,7 @@ def max_difference_calc(arr_temp, difference = -1):
     max_value, index_max = max(arr_temp), np.argmax(arr_temp)
 
     if (index_max > 0) and (max_value - min(arr_temp[:index_max])) > (difference + 1):
-      difference = max_value - min(arr_temp[:index_max+1])
+      difference = max_value - min(arr_temp[:index_max])
 
     return max_difference_calc(arr_temp[index_max+1:], difference)
 
