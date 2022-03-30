@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as bs
 
 URL = 'https://coderbyte.com/'
 LOGIN_ROUTE = 'sl'
+REQUEST_URL = 'backend/requests/sl/login.php'
 
 RESULTS_PATH = 'dashboard/ishangoai-nx1aa'
 
@@ -10,26 +11,31 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleW
             'origin': 'https://coderbyte.com',
             'referer': 'https://coderbyte.com/sl'}
 
-s = requests.session()
-test_cookies = s.get(URL + LOGIN_ROUTE).cookies
+with requests.session() as s:
+        
+    initial_soup = s.get(URL + LOGIN_ROUTE).content
+    pageToken = str(initial_soup,'utf-8').split(r'window.__pageToken = "')[1].split(r'";')[0]
 
-csrf_token = {'CoderbyteSessionKey': 'nFWZPgGKivrJnifqBPy8'}
+    #soup = bs(initial_soup.text, 'html.parser')
+    #script = soup.find_all('script')
 
-login_payload = {
-    'username': 'oliver@ishango.ai',
-    'password': 'oliver0424',
-    'pageToken': 'a33a31beb913663277787b546e273d9305ebd735'
-}
+    login_payload = {
+        'username': 'oliver@ishango.ai',
+        'password': 'oliver0424',
+        'pageToken': pageToken
+    }
 
-login_req = s.post(URL + LOGIN_ROUTE,
-                    headers=HEADERS,
-                    data=login_payload
-                    )
+    login_req = s.post(URL + REQUEST_URL,
+                        data=login_payload
+                        )
 
-print(login_req)
+    print(login_req.content)
 
-cookies = login_req.cookies
+    middle_soup = login_req.headers
+    #print(middle_soup)
+    cookies = login_req.cookies
+    print(cookies)
 
-soup = bs(s.get(URL + RESULTS_PATH).text, 'html.parser')
+    soup = bs(s.get(URL + RESULTS_PATH).text, 'html.parser')
 
-print(soup)
+    #print(soup)
