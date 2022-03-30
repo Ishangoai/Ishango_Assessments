@@ -1,6 +1,4 @@
 import requests
-import re
-import json
 from bs4 import BeautifulSoup as bs
 
 URL = 'https://coderbyte.com/'
@@ -13,30 +11,31 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleW
             'origin': 'https://coderbyte.com',
             'referer': 'https://coderbyte.com/sl'}
 
-s = requests.session()
-initial_soup = s.get(URL + LOGIN_ROUTE).content
-pageToken = str(initial_soup,'utf-8').split(r'window.__pageToken = "')[1].split(r'";')[0]
+with requests.session() as s:
+        
+    initial_soup = s.get(URL + LOGIN_ROUTE).content
+    pageToken = str(initial_soup,'utf-8').split(r'window.__pageToken = "')[1].split(r'";')[0]
 
-#soup = bs(initial_soup.text, 'html.parser')
-#script = soup.find_all('script')
+    #soup = bs(initial_soup.text, 'html.parser')
+    #script = soup.find_all('script')
 
-login_payload = {
-    'username': 'oliver@ishango.ai',
-    'password': 'oliver0424',
-    'pageToken': pageToken
-}
+    login_payload = {
+        'username': 'oliver@ishango.ai',
+        'password': 'oliver0424',
+        'pageToken': pageToken
+    }
 
-login_req = s.post(URL + REQUEST_URL,
-                    data=login_payload
-                    )
+    login_req = s.post(URL + REQUEST_URL,
+                        data=login_payload
+                        )
 
-print(login_req.content)
+    print(login_req.content)
 
-middle_soup = login_req.headers
-#print(middle_soup)
-cookies = login_req.cookies
-print(cookies)
+    middle_soup = login_req.headers
+    #print(middle_soup)
+    cookies = login_req.cookies
+    print(cookies)
 
-soup = bs(s.get(URL + RESULTS_PATH).text, 'html.parser')
+    soup = bs(s.get(URL + RESULTS_PATH).text, 'html.parser')
 
-#print(soup)
+    #print(soup)
