@@ -1,5 +1,7 @@
 import requests
-from bs4 import BeautifulSoup as bs
+import re
+import json
+import pandas as pd
 
 URL = 'https://coderbyte.com/'
 LOGIN_ROUTE = 'sl'
@@ -14,11 +16,9 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleW
 with requests.session() as s:
         
     initial_soup = s.get(URL + LOGIN_ROUTE).content
+
     pageToken = str(initial_soup,'utf-8').split(r'window.__pageToken = "')[1].split(r'";')[0]
-
-    #soup = bs(initial_soup.text, 'html.parser')
-    #script = soup.find_all('script')
-
+    
     login_payload = {
         'username': 'oliver@ishango.ai',
         'password': 'oliver0424',
@@ -29,17 +29,15 @@ with requests.session() as s:
                         data=login_payload
                         )
 
-    #print(login_req.content)
+    page = s.get(URL + RESULTS_PATH).text
 
-    middle_soup = login_req.headers
-    #print(middle_soup)
-    cookies = login_req.cookies
-    #print(cookies)
+# fetch display name
+assessment_details = re.search(r"window\.__org_assessmentDetails = (.*?);", page).group(1)
+display_name = json.loads(assessment_details)['display_name']
+display_name = display_name.replace(' ', '_').lower()
 
-    soup = bs(s.get(URL + RESULTS_PATH).text, 'html.parser')
-
-    script = soup.find_all('script')
-    print(type(script))
-    print(len(script))
-
-    #print(script)
+# fetch coding results
+data = re.search(r"window\.__org_candidates = (.*?);", page).group(1)
+data  = json.loads(data)
+df = pd.json_normalize(data)
+df.to_csv(display_name + '.csv', index=False)
