@@ -29,13 +29,17 @@ with requests.session() as s:
                         data=login_payload
                         )
 
-    print(login_req.content)
+    #print(login_req.content)
 
     middle_soup = login_req.headers
     #print(middle_soup)
     cookies = login_req.cookies
-    print(cookies)
+    #print(cookies)
 
     soup = bs(s.get(URL + RESULTS_PATH).text, 'html.parser')
 
-    #print(soup)
+    script = soup.find_all('script')
+    print(type(script))
+    print(len(script))
+
+    #print(script)
