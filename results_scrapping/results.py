@@ -27,7 +27,7 @@ with requests.session() as s:
     page = s.get(URL + RESULTS_PATH).text
 
 
-# fetch display name
+# fetch the display name
 assessment_details = re.search(r"window\.__org_assessmentDetails = (.*?);", page).group(1)
 display_name = json.loads(assessment_details)['display_name']
 display_name = display_name.replace(' ', '_').lower()
