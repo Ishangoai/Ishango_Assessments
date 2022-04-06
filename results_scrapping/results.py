@@ -6,19 +6,14 @@ import pandas as pd
 URL = 'https://coderbyte.com/'
 LOGIN_ROUTE = 'sl'
 REQUEST_URL = 'backend/requests/sl/login.php'
-
 RESULTS_PATH = 'dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz'
-
-HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.83 Safari/537.36',
-            'origin': 'https://coderbyte.com',
-            'referer': 'https://coderbyte.com/sl'}
 
 with requests.session() as s:
         
     initial_soup = s.get(URL + LOGIN_ROUTE).content
 
     pageToken = str(initial_soup,'utf-8').split(r'window.__pageToken = "')[1].split(r'";')[0]
-    
+
     login_payload = {
         'username': 'oliver@ishango.ai',
         'password': 'oliver0424',
@@ -30,6 +25,7 @@ with requests.session() as s:
                         )
 
     page = s.get(URL + RESULTS_PATH).text
+
 
 # fetch display name
 assessment_details = re.search(r"window\.__org_assessmentDetails = (.*?);", page).group(1)
