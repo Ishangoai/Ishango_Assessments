@@ -37,3 +37,4 @@ data = re.search(r"window\.__org_candidates = (.*?);", page).group(1)
 data  = json.loads(data)
 df = pd.json_normalize(data)
 df.to_csv(display_name + '.csv', index=False)
+
