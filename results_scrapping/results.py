@@ -17,7 +17,11 @@ with requests.session() as s:
         
     initial_soup = s.get(URL + LOGIN_ROUTE).text
 
-    pageToken = re.search(r'window\.__pageToken = (.*?);', initial_soup).group(1).replace('"', '')
+    # regex explanation: 
+    # search for all occurances that match pattern within re.search
+    # (.*?) will match any content. It is still unclear how "?" helps
+    pageToken = re.search(r'window\.__pageToken = "(.*?)";', initial_soup).group(1)
+
     login_payload = {
         'username': 'oliver@ishango.ai',
         'password': 'oliver0424',
