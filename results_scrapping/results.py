@@ -1,3 +1,8 @@
+'''
+This script logs into the coderbyte website, scrapes coding results, and saves them to a .csv file.
+Because the coderbyte API costs $200/month, this script can save Ishango costs.
+'''
+
 import requests
 import re
 import json
@@ -10,10 +15,9 @@ RESULTS_PATH = 'dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz'
 
 with requests.session() as s:
         
-    initial_soup = s.get(URL + LOGIN_ROUTE).content
+    initial_soup = s.get(URL + LOGIN_ROUTE).text
 
-    pageToken = str(initial_soup,'utf-8').split(r'window.__pageToken = "')[1].split(r'";')[0]
-
+    pageToken = re.search(r'window\.__pageToken = (.*?);', initial_soup).group(1).replace('"', '')
     login_payload = {
         'username': 'oliver@ishango.ai',
         'password': 'oliver0424',
