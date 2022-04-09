@@ -43,7 +43,8 @@ with requests.session() as s:
         response = s.get(URL + page).text
         results = re.search(r"window\.__org_candidates = (.*?);", response).group(1)
         results  = json.loads(results)
-        dfs.append(pd.json_normalize(results))
+        df = pd.json_normalize(results)
+        dfs.append(df)
 
 df_final = functools.reduce(lambda top,bottom: pd.concat([top,bottom]), dfs)
 df_final.to_csv('df_final.csv', index=False)
