@@ -1,5 +1,6 @@
 # Adding the selenium try files
 results_scrapping/Selenium_approach
+results_scrapping/credentials.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

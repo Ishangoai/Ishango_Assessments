@@ -7,6 +7,7 @@ import requests
 import re
 import json
 import pandas as pd
+import credentials as C
 
 URL = 'https://coderbyte.com/'
 LOGIN_ROUTE = 'sl'
@@ -18,13 +19,13 @@ with requests.session() as s:
     initial_soup = s.get(URL + LOGIN_ROUTE).text
 
     # regex explanation: 
-    # search for all occurances that match pattern within re.search
+    # search for all occurrences that match pattern within re.search
     # (.*?) will match any content. It is still unclear how "?" helps
     pageToken = re.search(r'window\.__pageToken = "(.*?)";', initial_soup).group(1)
 
     login_payload = {
-        'username': 'oliver@ishango.ai',
-        'password': 'oliver0424',
+        'username': C.Payload.username,
+        'password': C.Payload.password,
         'pageToken': pageToken
     }
 
