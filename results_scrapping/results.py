@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 This script logs into the coderbyte website, scrapes coding results, and saves them to a .csv file.
 Because the coderbyte API costs $200/month, this script can save Ishango costs.
