@@ -10,7 +10,7 @@ import credentials as C
 import definitions as D
 
 """
-This file holds the main accessory functions
+This file holds any accessory functions
 """
 
 def return_results(assessments: List[str]) -> List[pd.DataFrame]:
@@ -53,7 +53,7 @@ def return_results(assessments: List[str]) -> List[pd.DataFrame]:
         }
 
         # Post payload to login
-        login_request = s.post(D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE,
+        s.post(D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE,
                 data=login_payload
                 )
 

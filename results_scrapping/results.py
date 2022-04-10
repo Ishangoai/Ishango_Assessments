@@ -10,7 +10,7 @@ import definitions as D
 from tools import return_results
 
 # retrieve results for a list of assessments
-assessment_results = return_results(D.Paths.ASSESSMENT_PAGES)
+assessment_results = return_results(D.Assessments.ASSESSMENT_PAGES)
 
 # Export results
 assessment_results.to_csv(D.Paths.export_file, index=False)
