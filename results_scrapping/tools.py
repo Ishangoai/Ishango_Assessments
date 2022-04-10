@@ -17,13 +17,17 @@ def return_results(assessments: List[str]) -> pd.DataFrame:
     """
     Connects to the main site and retrieves the pageToken,
     necessary to login into the test result pages.
-    The payload is then posted using requests
+    The payload is then posted using requests.
 
     Once logged in, the student information and the results of a
     list of tests/challenges are retrieved and store into a list
-    of dataframes (one per each assessment)
+    of dataframes (one per each assessment).
 
-    This dataframes are then concatenated and returned
+    These dataframes are then concatenated and returned.
+
+    The variables window\.__pageToken and window\.__org_candidates
+    are the JS variables that hold the pageToken and the assessment
+    results respectively, and that are used in the regex searches.
 
     Args:
         assessments (List[str]): list with the URLs pointing to each
@@ -31,7 +35,7 @@ def return_results(assessments: List[str]) -> pd.DataFrame:
 
     Returns:
         results_union (pd.DataFrame): union of multiple dataframes,
-        each contained the students' information and results
+        each contained the students' information and results.
     """
 
     # Using a requests session to keep the connection alive; it also
@@ -63,7 +67,7 @@ def return_results(assessments: List[str]) -> pd.DataFrame:
         for page in assessments:
             response = s.get(D.Paths.URL + page).text
             results = re.search(r"window\.__org_candidates = (.*?);", response).group(1)
-            results  = json.loads(results)
+            results = json.loads(results)
             results = pd.json_normalize(results)
             results_list.append(results)
 
