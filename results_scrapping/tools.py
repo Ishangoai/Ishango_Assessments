@@ -13,7 +13,7 @@ import definitions as D
 This file holds any accessory functions
 """
 
-def return_results(assessments: List[str]) -> List[pd.DataFrame]:
+def return_results(assessments: List[str]) -> pd.DataFrame:
     """
     Connects to the main site and retrieves the pageToken,
     necessary to login into the test result pages.
@@ -23,14 +23,15 @@ def return_results(assessments: List[str]) -> List[pd.DataFrame]:
     list of tests/challenges are retrieved and store into a list
     of dataframes (one per each assessment)
 
+    This dataframes are then concatenated and returned
+
     Args:
         assessments (List[str]): list with the URLs pointing to each
         assessment for with a set of results must be retrieved
 
     Returns:
-        assessments_results (List[pd.DataFrame]): list with multiple
-        dataframes, each containing the students' information and
-        results on the assessment
+        results_union (pd.DataFrame): union of multiple dataframes,
+        each contained the students' information and results
     """
 
     # Using a requests session to keep the connection alive; it also

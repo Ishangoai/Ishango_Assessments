@@ -28,3 +28,4 @@ class Assessments(List, enum.Enum):
     'dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6',
     'dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3'
     ]
+
