@@ -13,11 +13,11 @@ class Paths(str, enum.Enum):
     LOGIN_PAGE = 'sl'
     BACKEND_LOGIN_PAGE = 'backend/requests/sl/login.php'
 
-    # Added this variable the path to the public folder to be
-    # added by Oliver
+    # path where the file will be saved if other than the
+    # current folder
     destination_folder = ''
 
-    export_file = '2022_Spring_assessment_results.csv'
+    export_file = '2022_ghana_assessment_results.csv'
 
 
 class Assessments(List, enum.Enum):
@@ -25,7 +25,7 @@ class Assessments(List, enum.Enum):
     Placeholder for the assessment links
     """
 
-    SPRING_2022_ASSESSMENT_PAGES = [
+    GHANA_2022_ASSESSMENT_PAGES = [
     'dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz',
     'dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6',
     'dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3'
