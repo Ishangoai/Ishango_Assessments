@@ -4,10 +4,8 @@ This script logs into the coderbyte website, scrapes coding results, and saves t
 Because the coderbyte API costs $200/month, this script can save Ishango costs.
 '''
 import definitions as D
-from tools import return_results
+from tools import download_assessment_results
 
 # retrieve results for a list of assessments
-assessment_results = return_results(D.Assessments.GHANA_2022_ASSESSMENT_PAGES)
+download_assessment_results(D.Assessments.GHANA_2022_ASSESSMENT_PAGES, D.Paths.export_file)
 
-# Export results
-assessment_results.to_csv(D.Paths.export_file, index=False)
