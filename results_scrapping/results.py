@@ -7,5 +7,8 @@ import definitions as D
 from tools import download_assessment_results
 
 # retrieve results for a list of assessments
-download_assessment_results(D.Assessments.GHANA_2022_ASSESSMENT_PAGES, D.Paths.export_file)
+download_assessment_results(
+    D.Assessments.ghana_2022_assessments,
+    D.Paths.ghana_2022_export_path
+    )
 
