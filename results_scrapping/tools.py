@@ -103,19 +103,3 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 
     dataframe.to_csv(path, index=False)
 
-
-def download_assessment_results(assessments: List[str], path: str) -> None:
-    """
-    Wrapper function, that takes a list of assessments to be downloaded and
-    saves it into the provided (local) path 
-
-    Args:
-        assessments (List[str]): list with the URLs pointing to each
-        assessment for with a set of results must be retrieved
-        path (str): local path to export the .csv file into
-    """
-
-    session = login()
-    results = retrive_and_model_results(assessments, session)
-    save_results(results, path)
-
