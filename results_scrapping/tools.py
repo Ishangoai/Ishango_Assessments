@@ -13,7 +13,7 @@ import definitions as D
 This file holds any main and accessory functions
 """
 
-def login() -> requests.session:
+def login(debug:bool = False) -> requests.session:
     """
     Connects to the main site and retrieves the pageToken,
     necessary to login into the test result pages.
@@ -21,6 +21,10 @@ def login() -> requests.session:
 
     The variable window\.__pageToken is the JS variables that holds
     the pageToken and that are used in the regex search.
+
+    Args:
+        debug (bool): if True, it will return the status_code and not
+        the session object, for debugging purposes
 
     Returns:
         s (requests.session): requests session that does the
@@ -34,6 +38,7 @@ def login() -> requests.session:
         
         # Connect to the main site
         main_site = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).text
+        status_code = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).status_code
 
         # Retrieve necessary token - regex explanation: 
         # search for all occurrences that match pattern within re.search
@@ -46,12 +51,14 @@ def login() -> requests.session:
             'pageToken': pageToken
         }
 
-        # Post payload to login
+        # Post payload to login, retrieve status code
         session.post(D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE,
                 data=login_payload
                 )
 
-        return session
+        # returns the requests.session object unless in debug mode,
+        # where it returns the session's status code
+        return session if not debug else status_code
 
 def retrive_and_model_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
     """
