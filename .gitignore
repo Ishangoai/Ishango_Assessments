@@ -1,6 +1,6 @@
-# Adding the selenium try files
-results_scrapping/Selenium_approach
+# Adding the credentials files and MacOS random file
 results_scrapping/credentials.py
+.DS_store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
