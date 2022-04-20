@@ -13,13 +13,14 @@ import definitions as D
 This file holds any main and accessory functions
 """
 
-def login(debug:bool = False) -> requests.session:
+
+def login(debug: bool = False) -> requests.session:
     """
     Connects to the main site and retrieves the pageToken,
     necessary to login into the test result pages.
     The payload is then posted using requests.
 
-    The variable window\.__pageToken is the JS variables that holds
+    The variable window\\.__pageToken is the JS variables that holds
     the pageToken and that are used in the regex search.
 
     Args:
@@ -35,12 +36,11 @@ def login(debug:bool = False) -> requests.session:
     # does the cookies management (post to payload, etc.) automatically
 
     with requests.session() as session:
-        
         # Connect to the main site
         main_site = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).text
         status_code = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).status_code
 
-        # Retrieve necessary token - regex explanation: 
+        # Retrieve necessary token - regex explanation:
         # search for all occurrences that match pattern within re.search
         # (.*?) will match any content. It is still unclear how "?" helps
         pageToken = re.search(r'window\.__pageToken = "(.*?)";', main_site).group(1)
@@ -52,13 +52,14 @@ def login(debug:bool = False) -> requests.session:
         }
 
         # Post payload to login, retrieve status code
-        session.post(D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE,
-                data=login_payload
-                )
+        session.post(
+            D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE, data=login_payload
+        )
 
         # returns the requests.session object unless in debug mode,
         # where it returns the session's status code
         return session if not debug else status_code
+
 
 def retrive_and_model_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
     """
@@ -67,8 +68,7 @@ def retrive_and_model_results(assessments: List[str], session: requests.session)
     of dataframes (one per each assessment).
 
     These dataframes are then concatenated and returned.
-
-    The variable window\.__org_candidates is the JS variable that
+    The variable window\\.__org_candidates is the JS variable that
     holds the assessment results, and that is used in the regex search.
 
     Args:
@@ -82,7 +82,6 @@ def retrive_and_model_results(assessments: List[str], session: requests.session)
         results_union (pd.DataFrame): union of multiple dataframes,
         each contained the students' information and results.
     """
-    
     # Fetch assessments results
     results_list = []
     for page in assessments:
@@ -93,10 +92,12 @@ def retrive_and_model_results(assessments: List[str], session: requests.session)
         results_list.append(results)
 
     # Union the results of all assessments
-    results_union = functools.reduce(lambda top,bottom: pd.concat([top,bottom]),
-                                results_list)
-    
+    results_union = functools.reduce(
+        lambda top, bottom: pd.concat([top, bottom]), results_list
+    )
+
     return results_union
+
 
 def save_results(dataframe: pd.DataFrame, path: str) -> None:
     """
@@ -109,4 +110,3 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
     """
 
     dataframe.to_csv(path, index=False)
-
