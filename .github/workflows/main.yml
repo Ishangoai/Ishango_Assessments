@@ -1,13 +1,15 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
+# The content of the file is the default file when selecting "Python application", from the workflow template options
+
 name: Main Python application
 
 on:
   push:
-    branches: [ VOLR_develop ]
+    branches: [ development ]
   pull_request:
-    branches: [ VOLR_develop ]
+    branches: [ development ]
 
 permissions:
   contents: read
