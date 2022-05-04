@@ -14,4 +14,3 @@ results = retrive_and_model_results(D.Assessments.ghana_2022_assessments, sessio
 
 # save the resulting dataframe
 save_results(results, D.Paths.ghana_2022_export_path)
-
