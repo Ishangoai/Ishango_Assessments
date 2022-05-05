@@ -1,4 +1,3 @@
-import pytest
 import requests
 import scraping.definitions as D
 
