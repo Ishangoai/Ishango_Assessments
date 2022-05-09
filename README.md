@@ -15,3 +15,4 @@ This repo contains the code to "solve" this problem, by logging into the platfor
     │   └── tools.py                # All functions used by the main app
     └── README.md
 
+![Tests](https://github.com/RicSegundo/Coderbyte_Ishango/actions/workflows/tests.yml/badge.svg)
