@@ -15,4 +15,4 @@ This repo contains the code to "solve" this problem, by logging into the platfor
     │   └── tools.py                # All functions used by the main app
     └── README.md
 
-![Tests]((https://github.com/RicSegundo/Coderbyte_Ishango/actions/workflows/main.yml/badge.svg))
+[![Main Python application](https://github.com/RicSegundo/Coderbyte_Ishango/actions/workflows/main.yml/badge.svg)](https://github.com/RicSegundo/Coderbyte_Ishango/actions/workflows/main.yml)
