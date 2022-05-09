@@ -18,5 +18,5 @@ def extract_results() -> None:
     save_results(results, D.Paths.ghana_2022_export_path)
 
 
-if '__name__' == '__main__':
+if __name__ == '__main__':
     extract_results()
