@@ -1,2 +1,2 @@
 [run]
-include = scraping.py
+include = */src/*
