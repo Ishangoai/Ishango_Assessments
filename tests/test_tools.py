@@ -1,6 +1,5 @@
-import pytest
 import requests
-import results_scrapping.definitions as D
+import scraping.definitions as D
 
 
 def test_tools_login():
