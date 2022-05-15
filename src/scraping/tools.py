@@ -89,6 +89,11 @@ def retrive_and_model_results(assessments: List[str], session: requests.session)
         results = re.search(r"window\.__org_candidates = (.*?);", response).group(1)
         results = json.loads(results)
         results = pd.json_normalize(results)
+
+        # add url to coding report
+        as_id = ':' + D.Assessments.ghana_2022_assessments[0].split(':')[1]
+        results['report_url'] = D.Paths.URL + 'report/' + results['username'] + as_id
+
         results_list.append(results)
 
     # Union the results of all assessments
