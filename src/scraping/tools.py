@@ -84,14 +84,14 @@ def retrive_and_model_results(assessments: List[str], session: requests.session)
     """
     # Fetch assessments results
     results_list = []
-    for page in assessments:
-        response = session.get(D.Paths.URL + page).text
+    for assessment in assessments:
+        response = session.get(D.Paths.URL + assessment).text
         results = re.search(r"window\.__org_candidates = (.*?);", response).group(1)
         results = json.loads(results)
         results = pd.json_normalize(results)
 
         # add url to coding report
-        as_id = ':' + D.Assessments.ghana_2022_assessments[0].split(':')[1]
+        as_id = ':' + assessment.split(':')[1]
         results['report_url'] = D.Paths.URL + 'report/' + results['username'] + as_id
 
         results_list.append(results)
