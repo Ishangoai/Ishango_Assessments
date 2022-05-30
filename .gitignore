@@ -1,6 +1,6 @@
-# Adding the credentials files and MacOS random file
-src/scraping/credentials.py
+# Adding the MacOS random file and other general files
 .DS_store
+general_docs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
