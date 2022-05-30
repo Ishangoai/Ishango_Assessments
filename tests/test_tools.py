@@ -19,4 +19,4 @@ def test_credentials_retrieval():
     login_pass = C.Payload.password
 
     assert login_user is not None, "Username not found"
-    assert login_pass is not None, "Username not found"
+    assert login_pass is not None, "Password not found"
