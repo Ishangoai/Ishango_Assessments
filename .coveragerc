@@ -1,2 +1,3 @@
 [run]
-include = */src/*
+;include = */src/*
+;disable_warnings = include-ignored
