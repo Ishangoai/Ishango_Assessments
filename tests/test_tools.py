@@ -13,7 +13,7 @@ def test_tools_login():
 
 
 def test_credentials_retrieval():
-    # Check if the credentials store as environmental variables
+    # Check if the credentials stored as environmental variables
     # can be retrieved (specially in the github actions environment)
     login_user = C.Payload.username
     login_pass = C.Payload.password

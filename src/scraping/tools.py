@@ -6,8 +6,8 @@ import functools
 
 from typing import List
 
-import credentials as C
-import definitions as D
+import scraping.credentials as C
+import scraping.definitions as D
 
 """
 This file holds any main and accessory functions
@@ -61,7 +61,7 @@ def login(debug: bool = False) -> requests.session:
         return session if not debug else status_code
 
 
-def retrive_and_model_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
+def retrieve_and_model_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
