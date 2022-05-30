@@ -1,6 +1,6 @@
-# Adding the credentials files and MacOS random file
-results_scrapping/credentials.py
+# Adding the MacOS random file and other general files
 .DS_store
+general_docs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,3 +131,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# vs-code
+.vscode
