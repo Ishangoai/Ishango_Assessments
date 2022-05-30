@@ -2,8 +2,8 @@ import os
 import enum
 
 # The class below will hold the credentials information
-# The filename will be added to git and distributed to
-# the project team members separately
+# These should be requested to the Team Lead (Oliver) and
+# stored locally as environmental variables
 
 
 class Payload(str, enum.Enum):
