@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import json
 import functools
+import sqlite3
 
 from typing import Dict, List
 
@@ -13,6 +14,12 @@ import scraping.definitions as D
 """
 This file holds any main and accessory functions
 """
+
+#################################################
+#                                               #
+#                SCRAPING TOOLS                 #
+#                                               #
+#################################################
 
 
 def login(debug: bool = False) -> requests.session:
@@ -156,3 +163,45 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
     """
 
     dataframe.to_csv(path, index=False)
+
+
+#################################################
+#                                               #
+#             DB INTERACTION TOOLS              #
+#                                               #
+#################################################
+
+
+def db_connect(db_name: str) -> sqlite3.connect:
+    """
+    Connects to a database and returns the connection object.
+
+    Args:
+        db_name (str): database path and name
+
+    Returns:
+        conn (sqlite3.connect): connection object to the database
+    """
+
+    # Connect to the database
+    conn = sqlite3.connect(db_name)
+
+    return conn
+
+
+def db_dataframe_to_db(
+                    dataframe: pd.DataFrame,
+                    conn: sqlite3.connect,
+                    table_name: str,
+                    ) -> None:
+    """
+    Takes the concatenated dataframe with the results of all assessments
+    and saves it into a local database
+
+    Args:
+        dataframe (pd.DataFrame): Concatenated dataframe to be saved
+        path (str): local path of the SQLite database
+        table_name (str): name of the table to be created/used in the database
+    """
+
+    dataframe.to_sql(table_name, con=conn, if_exists='append', index=False)

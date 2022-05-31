@@ -62,3 +62,13 @@ class DataTypes(Dict, enum.Enum):
         'date_link_sent':           'datetime64[ns]',
         'report_url':               'object',
     }
+
+
+class Database(str, enum.Enum):
+    """
+    Placeholder for the database connection details
+    """
+
+    # SQLite Database connection
+    DB_PATH = 'general_docs/Ishango_Coderbyte_DB.db'
+    TABLE_ghana_2022 = 'ghana2022'
