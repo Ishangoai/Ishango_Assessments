@@ -32,4 +32,4 @@ def extract_results(
 
 
 if __name__ == '__main__':
-    extract_results(model=True, save_to_db=True, save_to_file=False)
+    extract_results(model=True, save_to_db=False, save_to_file=True)

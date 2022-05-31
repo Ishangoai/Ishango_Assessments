@@ -146,9 +146,6 @@ def model_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.Data
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
 
-    print(dataframe.dtypes)
-    print(dataframe.head())
-
     return dataframe
 
 
