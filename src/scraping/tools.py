@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import json
 import functools
-import sqlite3
+import sqlalchemy
 
 from typing import Dict, List
 
@@ -132,8 +132,9 @@ def model_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.Data
         the database.
     """
 
-    # Correct N/A values
+    # Correct N/A and empty [] values
     dataframe.replace(['N/A'], np.nan, regex=True, inplace=True)
+    dataframe['mc_answers'] = dataframe['mc_answers'].str.strip('[]').astype(object)
 
     # Convert datetimes to datetime64
     dataframe['date_joined'] = pd.to_datetime(
@@ -169,7 +170,7 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 #################################################
 
 
-def db_connect(db_name: str) -> sqlite3.connect:
+def db_connect(db_name: str) -> sqlalchemy.engine.base.Engine:
     """
     Connects to a database and returns the connection object.
 
@@ -177,18 +178,18 @@ def db_connect(db_name: str) -> sqlite3.connect:
         db_name (str): database path and name
 
     Returns:
-        conn (sqlite3.connect): connection object to the database
+        conn (sqlalchemy.engine.base.Engine): connection object to the database
     """
 
     # Connect to the database
-    conn = sqlite3.connect(db_name)
+    db_engine = sqlalchemy.create_engine('sqlite:///' + db_name)
 
-    return conn
+    return db_engine
 
 
 def db_dataframe_to_db(
                     dataframe: pd.DataFrame,
-                    conn: sqlite3.connect,
+                    conn: sqlalchemy.engine.base.Engine,
                     table_name: str,
                     ) -> None:
     """
@@ -201,4 +202,9 @@ def db_dataframe_to_db(
         table_name (str): name of the table to be created/used in the database
     """
 
-    dataframe.to_sql(table_name, con=conn, if_exists='append', index=False)
+    dataframe.to_sql(
+                    name='' + table_name,
+                    con=conn,
+                    if_exists='replace',
+                    index=False
+                    )
