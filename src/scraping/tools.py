@@ -1,10 +1,11 @@
 import re
 import requests
+import numpy as np
 import pandas as pd
 import json
 import functools
 
-from typing import List
+from typing import Dict, List
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -61,7 +62,7 @@ def login(debug: bool = False) -> requests.session:
         return session if not debug else status_code
 
 
-def retrieve_and_model_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
+def retrieve_and_union_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -92,7 +93,7 @@ def retrieve_and_model_results(assessments: List[str], session: requests.session
 
         # add url to coding report
         as_id = ':' + assessment.split(':')[1]
-        results['report_url'] = D.Paths.URL + 'report/' + results['username'] + as_id
+        results['report_url'] = D.Paths.URL + D.Paths.REPORT + results['username'] + as_id
 
         results_list.append(results)
 
@@ -102,6 +103,46 @@ def retrieve_and_model_results(assessments: List[str], session: requests.session
     )
 
     return results_union
+
+
+def model_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.DataFrame:
+    """
+    The resulting dataframe needs to be modeled to be inserted into a database.
+    The different columns types are passed as a list, and the dataframe is
+    modified accordingly.
+    The datetimes are correctly parsed, and the N/A values are converted
+    to numpy null values.
+
+    Args:
+        dataframe (pd.DataFrame): union of multiple dataframes, one for
+        each assessment with the students' information and results.
+
+        col_types (Dict[str, str]): Key-value pair of each columns name
+        and correspondent dtype. Should be revised for each set of assessment.
+
+    Returns:
+        dataframe (pd.DataFrame): modeled dataframe ready to be inserted into
+        the database.
+    """
+
+    # Correct N/A values
+    dataframe.replace(['N/A'], np.nan, regex=True, inplace=True)
+
+    # Convert datetimes to datetime64
+    dataframe['date_joined'] = pd.to_datetime(
+        dataframe['date_joined'], format='%m/%d/%y'
+        )
+    dataframe['date_link_sent'] = pd.to_datetime(
+        dataframe['date_link_sent'], format="%m/%d/%y, %I:%M%p"
+        )
+
+    # transform columns into final dtypes
+    dataframe = dataframe.astype(dtype=col_types)
+
+    print(dataframe.dtypes)
+    print(dataframe.head())
+
+    return dataframe
 
 
 def save_results(dataframe: pd.DataFrame, path: str) -> None:
