@@ -23,5 +23,5 @@ TABLE ghana2022 LIMIT 5;
 # List all docker containers
 docker ps (or docker container ls)
 
-# Kill (you can also stop, it tries to kill with a grace period instead of killing immediatly)
+# Kill (you can also stop, it tries to kill with a grace period instead of killing immediately)
 docker kill ishango_postgres
