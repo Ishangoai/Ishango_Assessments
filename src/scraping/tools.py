@@ -170,7 +170,16 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 #################################################
 
 
-def db_connect(db_name: str) -> sqlalchemy.engine.base.Engine:
+def db_connect(
+                db_path: str = D.DatabaseConnection.DB_PATH,
+                db_type: str = D.DatabaseTypes.SQLITE,
+                host: str = 'localhost',
+                # host: str = D.DatabaseConnection.HOST,
+                user: str = D.DatabaseConnection.USER,
+                password: str = D.DatabaseConnection.PASS,
+                port: int = D.DatabaseConnection.PORT,
+                db_name: str = D.DatabaseConnection.DB_NAME
+            ) -> sqlalchemy.engine.base.Engine:
     """
     Connects to a database and returns the connection object.
 
@@ -182,7 +191,13 @@ def db_connect(db_name: str) -> sqlalchemy.engine.base.Engine:
     """
 
     # Connect to the database
-    db_engine = sqlalchemy.create_engine('sqlite:///' + db_name)
+    if db_type == D.DatabaseTypes.SQLITE:
+        db_engine = sqlalchemy.create_engine(f'{db_type}:///' + db_path)
+
+    elif db_type == D.DatabaseTypes.POSTGRES:
+        db_engine = sqlalchemy.create_engine('{}://{}:{}@{}:{}/{}'.format(
+                                            db_type, user, password, host, port, db_name)
+                                            )
 
     return db_engine
 

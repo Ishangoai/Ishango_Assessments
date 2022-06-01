@@ -1,3 +1,4 @@
+import os
 import enum
 from typing import Dict, List
 
@@ -64,11 +65,36 @@ class DataTypes(Dict, enum.Enum):
     }
 
 
-class Database(str, enum.Enum):
+class DatabaseConnection(str, enum.Enum):
     """
     Placeholder for the database connection details
     """
 
     # SQLite Database connection
     DB_PATH = 'general_docs/Ishango_Coderbyte_DB.db'
+
+    # Docker Postgres Database connection
+    USER = os.getenv('POSTGRES_USER')
+    PASS = os.getenv('POSTGRES_PASS')
+    HOST = os.getenv('POSTGRES_HOST')
+    DB_NAME = os.getenv('POSTGRES_DB')
+    PORT = os.getenv('POSTGRES_PORT')
+
+
+class DatabaseTypes(str, enum.Enum):
+    """
+    Placeholder for the possible database types
+    """
+
+    # Possible database types:
+    SQLITE = 'sqlite'
+    POSTGRES = 'postgresql'
+
+
+class DatabaseTables(str, enum.Enum):
+    """
+    Placeholder for the database tables details
+    """
+
+    # Table(s) to be accessed/created
     TABLE_ghana_2022 = 'ghana2022'
