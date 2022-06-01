@@ -1,4 +1,4 @@
-version: '3.5'
+xversion: '3.5'
 services:
   database:
     container_name: ishango_postgres

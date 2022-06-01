@@ -112,9 +112,9 @@ def retrieve_and_union_results(assessments: List[str], session: requests.session
     return results_union
 
 
-def model_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.DataFrame:
+def pre_process_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.DataFrame:
     """
-    The resulting dataframe needs to be modeled to be inserted into a database.
+    The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
     modified accordingly.
     The datetimes are correctly parsed, and the N/A values are converted
@@ -128,7 +128,7 @@ def model_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.Data
         and correspondent dtype. Should be revised for each set of assessment.
 
     Returns:
-        dataframe (pd.DataFrame): modeled dataframe ready to be inserted into
+        dataframe (pd.DataFrame): pre-processed dataframe ready to be inserted into
         the database.
     """
 

@@ -37,12 +37,12 @@ class Assessments(List, enum.Enum):
     ]
 
 
-class DataTypes(Dict, enum.Enum):
+class PandasSchemas(Dict, enum.Enum):
     """
-    Placeholder for the assessment links
+    Placeholder for the Pandas dataframe schemas
     """
 
-    ghana_2022_dtypes = {
+    ghana_2022_schema = {
         'username':                 'object',
         'email':                    'object',
         'name':                     'object',

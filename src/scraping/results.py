@@ -8,7 +8,7 @@ import scraping.tools as T
 
 
 def extract_results(
-                    model: bool = True,
+                    pre_process: bool = True,
                     save_to_db: bool = True,
                     db_type: str = D.DatabaseTypes.SQLITE,
                     save_to_file: bool = True,
@@ -19,11 +19,16 @@ def extract_results(
     # retrieve results for a list of assessments
     results = T.retrieve_and_union_results(D.Assessments.ghana_2022_assessments, session)
 
-    if model:
-        # model results to be inserted into the database
-        results = T.model_results(results, D.DataTypes.ghana_2022_dtypes)
+    if pre_process:
+        # pre_process results to be inserted into the database
+        results = T.pre_process_results(results, D.PandasSchemas.ghana_2022_schema)
 
     if save_to_db:
+        # verify that pre-processing is done before saving to the database
+        if not pre_process:
+            print("Cannot save to database without pre-processing the results.")
+            return
+        # save results to database
         conn = T.db_connect(db_type=db_type)
         T.db_dataframe_to_db(results, conn, D.DatabaseTables.TABLE_ghana_2022)
 
