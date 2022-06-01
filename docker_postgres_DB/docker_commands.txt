@@ -1,3 +1,6 @@
+# Docker start the container (must be inside the folder where the docker-compose file is)
+docker-compose up -d
+
 # Access the DB inside the docker container
 docker exec -it ishango_postgres psql -U postgres
 

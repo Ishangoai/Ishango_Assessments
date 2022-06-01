@@ -175,8 +175,8 @@ def db_connect(
                 db_type: str = D.DatabaseTypes.SQLITE,
                 host: str = 'localhost',
                 # host: str = D.DatabaseConnection.HOST,
-                user: str = D.DatabaseConnection.USER,
-                password: str = D.DatabaseConnection.PASS,
+                user: str = C.Postgres.USER,
+                password: str = C.Postgres.PASS,
                 port: int = D.DatabaseConnection.PORT,
                 db_name: str = D.DatabaseConnection.DB_NAME
             ) -> sqlalchemy.engine.base.Engine:
