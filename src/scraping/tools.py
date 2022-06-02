@@ -204,7 +204,7 @@ def db_connect(
 
 def db_dataframe_to_db(
                     dataframe: pd.DataFrame,
-                    conn: sqlalchemy.engine.base.Engine,
+                    db_engine: sqlalchemy.engine.base.Engine,
                     table_name: str,
                     ) -> None:
     """
@@ -218,8 +218,8 @@ def db_dataframe_to_db(
     """
 
     dataframe.to_sql(
-                    name='' + table_name,
-                    con=conn,
+                    name=table_name,
+                    con=db_engine,
                     if_exists='replace',
                     index=False
                     )
