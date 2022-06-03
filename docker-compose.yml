@@ -2,7 +2,7 @@ version: '3.5'
 services:
   app:
     container_name: ishango_app
-    image: ishango:latest
+    build: .
     environment:
       - "ISHANGO_USER=${ISHANGO_USER}"
       - "ISHANGO_PASS=${ISHANGO_PASS}"
