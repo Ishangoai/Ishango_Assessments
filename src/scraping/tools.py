@@ -173,7 +173,7 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 def db_connect(
                 db_path: str = D.DatabaseConnection.DB_PATH,
                 db_type: str = D.DatabaseTypes.SQLITE,
-                host: str = 'localhost',
+                host: str = D.DatabaseConnection.LOCALHOST,
                 # host: str = D.DatabaseConnection.HOST,
                 user: str = C.Postgres.USER,
                 password: str = C.Postgres.PASS,
@@ -181,7 +181,7 @@ def db_connect(
                 db_name: str = D.DatabaseConnection.DB_NAME
             ) -> sqlalchemy.engine.base.Engine:
     """
-    Connects to a database and returns the connection object.
+    Connects to a database and returns the connection engine.
 
     Args:
         db_name (str): database path and name
