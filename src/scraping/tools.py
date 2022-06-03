@@ -173,8 +173,8 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 def db_connect(
                 db_path: str = D.DatabaseConnection.DB_PATH,
                 db_type: str = D.DatabaseTypes.SQLITE,
-                host: str = D.DatabaseConnection.LOCALHOST,
-                # host: str = D.DatabaseConnection.HOST,
+                # host: str = D.DatabaseConnection.LOCALHOST,
+                host: str = D.DatabaseConnection.HOST,
                 user: str = C.Postgres.USER,
                 password: str = C.Postgres.PASS,
                 port: int = D.DatabaseConnection.PORT,
