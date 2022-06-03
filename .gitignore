@@ -1,6 +1,7 @@
 # Adding the MacOS random file and other general files
 .DS_store
 general_docs/
+docker_postgres_DB/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

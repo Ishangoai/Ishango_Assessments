@@ -1,10 +1,12 @@
 import re
 import requests
+import numpy as np
 import pandas as pd
 import json
 import functools
+import sqlalchemy
 
-from typing import List
+from typing import Dict, List
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -12,6 +14,12 @@ import scraping.definitions as D
 """
 This file holds any main and accessory functions
 """
+
+#################################################
+#                                               #
+#                SCRAPING TOOLS                 #
+#                                               #
+#################################################
 
 
 def login(debug: bool = False) -> requests.session:
@@ -61,7 +69,7 @@ def login(debug: bool = False) -> requests.session:
         return session if not debug else status_code
 
 
-def retrieve_and_model_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
+def retrieve_and_union_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -92,7 +100,7 @@ def retrieve_and_model_results(assessments: List[str], session: requests.session
 
         # add url to coding report
         as_id = ':' + assessment.split(':')[1]
-        results['report_url'] = D.Paths.URL + 'report/' + results['username'] + as_id
+        results['report_url'] = D.Paths.URL + D.Paths.REPORT + results['username'] + as_id
 
         results_list.append(results)
 
@@ -102,6 +110,44 @@ def retrieve_and_model_results(assessments: List[str], session: requests.session
     )
 
     return results_union
+
+
+def pre_process_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.DataFrame:
+    """
+    The resulting dataframe needs to be pre-processed to be inserted into a database.
+    The different columns types are passed as a list, and the dataframe is
+    modified accordingly.
+    The datetimes are correctly parsed, and the N/A values are converted
+    to numpy null values.
+
+    Args:
+        dataframe (pd.DataFrame): union of multiple dataframes, one for
+        each assessment with the students' information and results.
+
+        col_types (Dict[str, str]): Key-value pair of each columns name
+        and correspondent dtype. Should be revised for each set of assessment.
+
+    Returns:
+        dataframe (pd.DataFrame): pre-processed dataframe ready to be inserted into
+        the database.
+    """
+
+    # Correct N/A and empty [] values
+    dataframe.replace(['N/A'], np.nan, regex=True, inplace=True)
+    dataframe['mc_answers'] = dataframe['mc_answers'].str.strip('[]').astype(object)
+
+    # Convert datetimes to datetime64
+    dataframe['date_joined'] = pd.to_datetime(
+        dataframe['date_joined'], format='%m/%d/%y'
+        )
+    dataframe['date_link_sent'] = pd.to_datetime(
+        dataframe['date_link_sent'], format="%m/%d/%y, %I:%M%p"
+        )
+
+    # transform columns into final dtypes
+    dataframe = dataframe.astype(dtype=col_types)
+
+    return dataframe
 
 
 def save_results(dataframe: pd.DataFrame, path: str) -> None:
@@ -115,3 +161,65 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
     """
 
     dataframe.to_csv(path, index=False)
+
+
+#################################################
+#                                               #
+#             DB INTERACTION TOOLS              #
+#                                               #
+#################################################
+
+
+def db_connect(
+                db_path: str = D.DatabaseConnection.DB_PATH,
+                db_type: str = D.DatabaseTypes.SQLITE,
+                # host: str = D.DatabaseConnection.LOCALHOST,
+                host: str = D.DatabaseConnection.HOST,
+                user: str = C.Postgres.USER,
+                password: str = C.Postgres.PASS,
+                port: int = D.DatabaseConnection.PORT,
+                db_name: str = D.DatabaseConnection.DB_NAME
+            ) -> sqlalchemy.engine.base.Engine:
+    """
+    Connects to a database and returns the connection engine.
+
+    Args:
+        db_name (str): database path and name
+
+    Returns:
+        conn (sqlalchemy.engine.base.Engine): connection object to the database
+    """
+
+    # Connect to the database
+    if db_type == D.DatabaseTypes.SQLITE:
+        db_engine = sqlalchemy.create_engine(f'{db_type}:///' + db_path)
+
+    elif db_type == D.DatabaseTypes.POSTGRES:
+        db_engine = sqlalchemy.create_engine('{}://{}:{}@{}:{}/{}'.format(
+                                            db_type, user, password, host, port, db_name)
+                                            )
+
+    return db_engine
+
+
+def db_dataframe_to_db(
+                    dataframe: pd.DataFrame,
+                    db_engine: sqlalchemy.engine.base.Engine,
+                    table_name: str,
+                    ) -> None:
+    """
+    Takes the concatenated dataframe with the results of all assessments
+    and saves it into a local database
+
+    Args:
+        dataframe (pd.DataFrame): Concatenated dataframe to be saved
+        path (str): local path of the SQLite database
+        table_name (str): name of the table to be created/used in the database
+    """
+
+    dataframe.to_sql(
+                    name=table_name,
+                    con=db_engine,
+                    if_exists='replace',
+                    index=False
+                    )

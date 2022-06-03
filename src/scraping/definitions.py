@@ -1,5 +1,6 @@
+import os
 import enum
-from typing import List
+from typing import Dict, List
 
 # Constants and strings should be stored in this file
 
@@ -13,6 +14,7 @@ class Paths(str, enum.Enum):
     URL = 'https://coderbyte.com/'
     LOGIN_PAGE = 'sl'
     BACKEND_LOGIN_PAGE = 'backend/requests/sl/login.php'
+    REPORT = 'report/'
 
     # path where the file will be saved (if other than the
     # current folder)
@@ -33,3 +35,65 @@ class Assessments(List, enum.Enum):
         'dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6',
         'dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3'
     ]
+
+
+class PandasSchemas(Dict, enum.Enum):
+    """
+    Placeholder for the Pandas dataframe schemas
+    """
+
+    ghana_2022_schema = {
+        'username':                 'object',
+        'email':                    'object',
+        'name':                     'object',
+        'challenges_completed':     'Int64',
+        'mc_score':                 'Int64',
+        'code_score':               'Int64',
+        'final_score':              'Int64',
+        'mc_answers':               'object',
+        'total_points':             'Int64',
+        'final_grade':              'object',
+        'time_taken':               'Int64',
+        'cheated':                  'object',
+        'status':                   'object',
+        'action':                   'object',
+        'compensation':             'object',
+        'video_response_uploaded':  'bool',
+        'date_joined':              'datetime64[ns]',
+        'date_link_sent':           'datetime64[ns]',
+        'report_url':               'object',
+    }
+
+
+class DatabaseConnection(str, enum.Enum):
+    """
+    Placeholder for the database connection details
+    """
+
+    # SQLite Database connection
+    DB_PATH = 'general_docs/Ishango_Coderbyte_DB.db'
+
+    # Docker Postgres Database connection
+    LOCALHOST = 'localhost'
+    HOST = os.getenv('POSTGRES_HOST')
+    PORT = os.getenv('POSTGRES_PORT')
+    DB_NAME = os.getenv('POSTGRES_DB')
+
+
+class DatabaseTypes(str, enum.Enum):
+    """
+    Placeholder for the possible database types
+    """
+
+    # Possible database types:
+    SQLITE = 'sqlite'
+    POSTGRES = 'postgresql'
+
+
+class DatabaseTables(str, enum.Enum):
+    """
+    Placeholder for the database tables details
+    """
+
+    # Table(s) to be accessed/created
+    TABLE_ghana_2022 = 'ghana2022'
