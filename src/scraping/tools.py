@@ -202,7 +202,7 @@ def db_connect(
     return db_engine
 
 
-def db_dataframe_to_db(
+def dataframe_to_db(
                     dataframe: pd.DataFrame,
                     db_engine: sqlalchemy.engine.base.Engine,
                     table_name: str,
