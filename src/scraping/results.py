@@ -30,7 +30,7 @@ def extract_results(
             return
         # save results to database
         db_engine = T.db_connect(db_type=db_type)
-        T.db_dataframe_to_db(results, db_engine, D.DatabaseTables.TABLE_ghana_2022.value)
+        T.dataframe_to_db(results, db_engine, D.DatabaseTables.TABLE_ghana_2022.value)
 
     if save_to_file:
         # save the resulting dataframe
