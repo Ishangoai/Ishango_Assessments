@@ -195,7 +195,7 @@ class DataBaseInteraction:
         """
 
         if db_type == D.DatabaseTypes.SQLITE:
-            db_engine = sqlalchemy.create_engine(f'{db_type}:///' + db_path)
+            db_engine = sqlalchemy.create_engine(f'{db_type}:///' + self.db_path)
 
         elif db_type == D.DatabaseTypes.POSTGRES:
             db_engine = sqlalchemy.create_engine(
