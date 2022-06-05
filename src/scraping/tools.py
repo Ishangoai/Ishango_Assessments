@@ -171,11 +171,14 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 
 class DataBaseInteraction:
     """
-    Object that will hold all the connection details, namely
-    the type of DB and the parameters necessary to connect to it.
+    Object that will hold most connection details
 
     Will also hold the connection itself, and will be able to save the
     dataframe into the chosen database.
+
+    Args:
+    dataframe (pd.DataFrame): Concatenated dataframe to be saved
+    table_name (str): name of the table to be created/used in the database
     """
 
     def __init__(
@@ -196,10 +199,13 @@ class DataBaseInteraction:
 
     def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
         """
-        Connects to the database using the parameters provided in the
-        configuration file, according to the DB type.
-        Uses the Pandas .to_sql method to save the dataframe into the
-        Database.
+        Calls two auxilary methods to connect and then convert the pandas
+        dataframe to SQL
+
+        Args:
+        db_type (str): type of database to create the engine for, with
+        the SQLalchemy library. Defaults to SQLite and will save a
+        local .db file.
         """
 
         # Create a connection engine
@@ -212,15 +218,9 @@ class DataBaseInteraction:
     def db_connect(self) -> None:
 
         """
-        Connects to a database and returns the connection engine.
-
-        Args:
-        db_type (str): type of database to create the engine for, with
-        the SQLalchemy library. Defaults to SQLite and will save a
-        local .db file.
-
-        Returns:
-        conn (sqlalchemy.engine.base.Engine): connection object to the database
+        Connects to a database using the parameters provided and
+        according to the DB type, stores the connection engine
+        (sqlalchemy.engine.base.Engine) as a property.
         """
 
         if self.db_type == D.DatabaseTypes.SQLITE:
@@ -242,12 +242,8 @@ class DataBaseInteraction:
     def dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
-        and saves it into a local database
-
-        Args:
-            dataframe (pd.DataFrame): Concatenated dataframe to be saved
-            db_engine (sqlalchemy.engine.base.Engine): connection object to the database
-            table_name (str): name of the table to be created/used in the database
+        and saves it into a local database using the Pandas .to_sql method,
+        passing in table_nameand db_engine
         """
 
         self.dataframe.to_sql(
