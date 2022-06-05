@@ -169,55 +169,66 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 #                                               #
 #################################################
 
+class DataBaseInteraction:
+    def __init__(
+        self,
+        ) -> None:
 
-def db_connect(
-                db_path: str = D.DatabaseConnection.DB_PATH,
-                db_type: str = D.DatabaseTypes.SQLITE,
-                # host: str = D.DatabaseConnection.LOCALHOST,
-                host: str = D.DatabaseConnection.HOST,
-                user: str = C.Postgres.USER,
-                password: str = C.Postgres.PASS,
-                port: int = D.DatabaseConnection.PORT,
-                db_name: str = D.DatabaseConnection.DB_NAME
-            ) -> sqlalchemy.engine.base.Engine:
-    """
-    Connects to a database and returns the connection engine.
+        self.db_path: str = D.DatabaseConnection.DB_PATH
+        self.host: str =  D.DatabaseConnection.HOST
+        self.user: str = C.Postgres.USER
+        self.password: str = C.Postgres.PASS
+        self.port: int = D.DatabaseConnection.PORT
+        self.db_name: str = D.DatabaseConnection.DB_NAME
 
-    Args:
+
+    def db_connect(self, db_type: str = D.DatabaseTypes.SQLITE) -> sqlalchemy.engine.base.Engine:
+
+        """
+        Connects to a database and returns the connection engine.
+
+        Args:
         db_name (str): database path and name
 
-    Returns:
+        Returns:
         conn (sqlalchemy.engine.base.Engine): connection object to the database
-    """
+        """
 
-    # Connect to the database
-    if db_type == D.DatabaseTypes.SQLITE:
-        db_engine = sqlalchemy.create_engine(f'{db_type}:///' + db_path)
+        if db_type == D.DatabaseTypes.SQLITE:
+            db_engine = sqlalchemy.create_engine(f'{db_type}:///' + db_path)
 
-    elif db_type == D.DatabaseTypes.POSTGRES:
-        db_engine = sqlalchemy.create_engine('{}://{}:{}@{}:{}/{}'.format(
-                                            db_type, user, password, host, port, db_name)
-                                            )
+        elif db_type == D.DatabaseTypes.POSTGRES:
+            db_engine = sqlalchemy.create_engine(
+                '{}://{}:{}@{}:{}/{}'
+                .format(
+                    db_type,
+                    self.user,
+                    self.password,
+                    self.host,
+                    self.port,
+                    self.db_name
+                    )
+                )
 
-    return db_engine
+        return db_engine
 
 
-def dataframe_to_db(
+    def dataframe_to_db(
                     dataframe: pd.DataFrame,
                     db_engine: sqlalchemy.engine.base.Engine,
                     table_name: str,
                     ) -> None:
-    """
-    Takes the concatenated dataframe with the results of all assessments
-    and saves it into a local database
+        """
+        Takes the concatenated dataframe with the results of all assessments
+        and saves it into a local database
 
-    Args:
-        dataframe (pd.DataFrame): Concatenated dataframe to be saved
-        path (str): local path of the SQLite database
-        table_name (str): name of the table to be created/used in the database
-    """
+        Args:
+            dataframe (pd.DataFrame): Concatenated dataframe to be saved
+            path (str): local path of the SQLite database
+            table_name (str): name of the table to be created/used in the database
+        """
 
-    dataframe.to_sql(
+        dataframe.to_sql(
                     name=table_name,
                     con=db_engine,
                     if_exists='replace',
