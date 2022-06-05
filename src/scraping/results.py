@@ -29,9 +29,9 @@ def extract_results(
             print("Cannot save to database without pre-processing the results.")
             return
         # save results to database
-        db = T.DataBaseInteraction()
-        db_engine = db.db_connect(db_type=db_type)
-        db.dataframe_to_db(results, db_engine, D.DatabaseTables.TABLE_ghana_2022.value)
+        db = T.DataBaseInteraction(results, D.DatabaseTables.TABLE_ghana_2022.value, db_type)
+        db.db_connect()
+        db.dataframe_to_db()
 
     if save_to_file:
         # save the resulting dataframe
