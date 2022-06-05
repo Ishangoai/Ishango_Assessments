@@ -233,7 +233,7 @@ class DataBaseInteraction:
 
         Args:
             dataframe (pd.DataFrame): Concatenated dataframe to be saved
-
+            db_engine (sqlalchemy.engine.base.Engine): connection object to the database
             table_name (str): name of the table to be created/used in the database
         """
 
