@@ -181,8 +181,7 @@ class DataBaseInteraction:
     def __init__(
         self,
         dataframe: pd.DataFrame,
-        table_name: str,
-        db_type: str = D.DatabaseTypes.SQLITE
+        table_name: str
                 ) -> None:
 
         self.db_path: str = D.DatabaseConnection.DB_PATH
@@ -191,10 +190,24 @@ class DataBaseInteraction:
         self.password: str = C.Postgres.PASS
         self.port: int = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.db_type: str = db_type
         self.dataframe: pd.DataFrame = dataframe
         self.table_name: str = table_name
         self.db_engine: sqlalchemy.engine.base.Engine = None
+
+    def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
+        """
+        Connects to the database using the parameters provided in the
+        configuration file, according to the DB type.
+        Uses the Pandas .to_sql method to save the dataframe into the
+        Database.
+        """
+
+        # Create a connection engine
+        self.db_type = db_type
+        self.db_connect()
+
+        # Save the dataframe into the database
+        self.dataframe_to_db()
 
     def db_connect(self) -> None:
 
