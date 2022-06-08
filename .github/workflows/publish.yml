@@ -2,9 +2,9 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: [ $default-branch ] # to be changed to "main" after we're happy with this file?
+    branches: [ development ] # to be changed to "main" after we're happy with this file?
   pull_request: # line to be deleted before merging?
-    branches: [ $default-branch ] # line to be deleted before merging?
+    branches: [ development ] # line to be deleted before merging?
 
 env:
   REGISTRY: ghcr.io
