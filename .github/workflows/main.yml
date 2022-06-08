@@ -7,9 +7,9 @@ name: Main Python application
 
 on:
   push:
-    branches: [ development ]
+    branches: [ $default-branch ]
   pull_request:
-    branches: [ development ]
+    branches: [ $default-branch ]
 
 permissions:
   contents: read
