@@ -1,6 +1,6 @@
 # Coderbyte_Ishango
 [Ishango](https://ishango.ai) is an NGO based in London, that provides African students the chance to work on Data Science projects for companies all around the world.
-To assess the candidates, they ask them to perform coding challenges/problems via several online platforms, that provide this kind of services.
+To assess the candidates, they ask them to perform coding challenges/problems via an online coding platform.
 
 Ishango wants to automatically (and periodically) retrieve the results of these assessments - this repo contains the code to "solve" this problem.
 
