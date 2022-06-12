@@ -1,4 +1,6 @@
-name: Create and publish a Docker image
+# code example taken from: https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
+
+name: Create and publish a Docker image to Github Container Registery (GHCR)
 
 on:
   push:
