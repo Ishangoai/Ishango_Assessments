@@ -58,7 +58,8 @@ jobs:
           key: ${{ secrets.DO_PRIVATE_SSHKEY }}
           port: 22
           script: |
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            #docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            touch testfilelolcat
 
 
 
