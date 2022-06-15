@@ -44,6 +44,22 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  build:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo secrets
+        run: echo ${{ env.IMAGE_NAME }} 
+      - name: Deploy to Digital Ocean droplet via SSH action
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: root
+          key: ${{ secrets.DO_PRIVATE_SSHKEY }}
+          port: 22
+          script: |
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
 
 
 
