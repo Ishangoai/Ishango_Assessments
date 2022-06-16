@@ -27,7 +27,7 @@ jobs:
         uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
+          username: ${{ github.actor }}  # username of the user that initiated the workflow run, e.g. oliverangelil
           password: ${{ secrets.GITHUB_TOKEN }}  # expires when a job finishes
 
       - name: Extract metadata (tags, labels) for Docker
@@ -59,6 +59,8 @@ jobs:
           echo ${{ env.IMAGE_NAME }} 
           echo ${{ secrets.GITHUB_TOKEN }}
           echo ${{ github.actor }}
+          echo ${{ github.sha }}
+
 
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
