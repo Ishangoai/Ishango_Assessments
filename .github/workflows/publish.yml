@@ -1,12 +1,12 @@
 # code example taken from: https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
 
-name: Create and publish a Docker image to Github Container Registery (GHCR)
+name: Build, Publish, and Deploy a Docker Image
 
 on:
   push:
-    branches: [ development ] # to be changed to "main" after we're happy with this file?
-  pull_request: # line to be deleted before merging?
-    branches: [ development ] # line to be deleted before merging?
+    branches: [ development ] 
+  pull_request: 
+    branches: [ development ] 
 
 env:
   REGISTRY: ghcr.io
@@ -35,6 +35,9 @@ jobs:
         uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: echo stuff
+        run: echo ${{ steps.meta.outputs.tags }} / ${{ steps.meta.outputs.labels }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
