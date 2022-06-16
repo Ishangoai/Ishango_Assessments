@@ -61,6 +61,7 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }}
           echo ${{ github.actor }}
           echo ${{ github.ref_name }}
+          echo ${{ steps.meta.outputs.tags }}
 
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
