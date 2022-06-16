@@ -56,6 +56,7 @@ jobs:
 
       - name: echo secrets
         run: |
+          echo ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           echo ${{ env.IMAGE_NAME }} 
           echo ${{ secrets.GITHUB_TOKEN }}
           echo ${{ github.actor }}
