@@ -28,7 +28,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}  # expires when a job finishes
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -58,6 +58,7 @@ jobs:
         run: |
           echo ${{ env.IMAGE_NAME }} 
           echo ${{ secrets.GITHUB_TOKEN }}
+          echo ${{ github.actor }}
 
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.4
