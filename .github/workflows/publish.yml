@@ -67,7 +67,7 @@ jobs:
           key: ${{ secrets.DO_PRIVATE_SSHKEY }}
           port: 22
           script: |
-            echo ${{ secrets.GITHUB_TOKEN }} > key
+            echo ${{ secrets.GITHUB_TOKEN }} > keyy
             #docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
 
