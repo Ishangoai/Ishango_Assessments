@@ -34,13 +34,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: echo stuff
-        run: echo ${{ steps.meta.outputs.tags }} / ${{ steps.meta.outputs.labels }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}        
 
       - name: Build and push Docker image
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
+        run: echo ${{ steps.meta.outputs.tags }} / ${{ steps.meta.outputs.labels }}
         with:
           context: .
           push: true
