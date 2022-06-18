@@ -67,4 +67,3 @@ jobs:
             -e ISHANGO_USER=${{ secrets.ISHANGO_USER }} \
             -e ISHANGO_PASS=${{ secrets.ISHANGO_PASS }} \
             --name ishango_app ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} 
-x
