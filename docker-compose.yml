@@ -1,15 +1,30 @@
-version: '3.8'
+version: "3.9"
 services:
-  app:
-    container_name: ishango_app
-    build: .
+  db:
+    container_name: ishango_postgres
+    image: postgres:latest
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
     environment:
-      - "ISHANGO_USER=${ISHANGO_USER}"
-      - "ISHANGO_PASS=${ISHANGO_PASS}"
-      - "POSTGRES_USER=${POSTGRES_USER}"
-      - "POSTGRES_PASS=${POSTGRES_PASS}"
-      - "POSTGRES_DB=${POSTGRES_DB}"
-      - "POSTGRES_HOST=${POSTGRES_HOST}"
-      - "POSTGRES_PORT=${POSTGRES_PORT}"
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
+
+
+# version: '3.8'
+# services:
+#   app:
+#     container_name: ishango_app
+#     build: .
+#     environment:
+#       - "ISHANGO_USER=${ISHANGO_USER}"
+#       - "ISHANGO_PASS=${ISHANGO_PASS}"
+#       - "POSTGRES_USER=${POSTGRES_USER}"
+#       - "POSTGRES_PASS=${POSTGRES_PASS}"
+#       - "POSTGRES_DB=${POSTGRES_DB}"
+#       - "POSTGRES_HOST=${POSTGRES_HOST}"
+#       - "POSTGRES_PORT=${POSTGRES_PORT}"
+#     ports:
+#       - 5432:5432
