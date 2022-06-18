@@ -33,5 +33,5 @@ class Postgres(str, enum.Enum):
     Placeholder for the login credentials
     """
 
-    USER = "postgres"
+    USER = os.getenv('POSTGRES_USER')
     PASS = os.getenv('POSTGRES_PASS')

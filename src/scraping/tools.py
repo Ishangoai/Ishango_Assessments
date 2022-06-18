@@ -228,7 +228,7 @@ class DataBaseInteraction:
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             self.db_engine = sqlalchemy.create_engine(
-                '{}://{}:{}@{}:{}/{}'
+                '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:oliver04@localhost:5432/ishango 
                 .format(
                     self.db_type,
                     self.user,
