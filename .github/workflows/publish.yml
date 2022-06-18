@@ -75,7 +75,7 @@ jobs:
             --name pg-docker \
             postgres
             
-            docker run -d -t -i \
+            echo docker run -d -t -i \
             -e ISHANGO_USER=${{ secrets.ISHANGO_USER }} \
             -e ISHANGO_PASS=${{ secrets.ISHANGO_PASS }} \
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
