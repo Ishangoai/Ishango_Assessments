@@ -66,4 +66,7 @@ jobs:
             docker run -d -t -i \
             -e ISHANGO_USER=${{ secrets.ISHANGO_USER }} \
             -e ISHANGO_PASS=${{ secrets.ISHANGO_PASS }} \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
+            -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
             --name ishango_app ${{ steps.meta.outputs.tags }}
