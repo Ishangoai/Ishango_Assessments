@@ -64,10 +64,12 @@ jobs:
           script: |
             docker pull ${{ steps.meta.outputs.tags }}
             docker pull postgres:latest
+            
+            docker network create mynet 
 
             docker start pg_docker || \
             docker run -d --rm \
-            --net host \
+            --net mynet \
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
             -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
@@ -77,6 +79,7 @@ jobs:
             postgres
             
             docker run -d -t -i \
+            --net mynet \
             -e ISHANGO_USER=${{ secrets.ISHANGO_USER }} \
             -e ISHANGO_PASS=${{ secrets.ISHANGO_PASS }} \
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
