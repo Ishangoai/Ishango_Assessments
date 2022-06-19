@@ -73,7 +73,6 @@ jobs:
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
             -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            -p 127.0.0.1:5432:5432 \
             -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data \
             --name pg_docker \
             postgres
@@ -85,5 +84,6 @@ jobs:
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
             -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            -p 80:80 \
             --name ishango_app \
             ${{ steps.meta.outputs.tags }}
