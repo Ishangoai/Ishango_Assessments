@@ -233,7 +233,7 @@ class DataBaseInteraction:
                     self.db_type,
                     self.user,
                     self.password,
-                    self.host,
+                    "pg-docker",
                     self.port,
                     self.db_name
                     )
