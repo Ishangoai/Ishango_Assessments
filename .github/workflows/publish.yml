@@ -85,6 +85,5 @@ jobs:
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
             -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            -p 80:80 \
             --name ishango_app \
             ${{ steps.meta.outputs.tags }}
