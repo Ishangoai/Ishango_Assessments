@@ -188,7 +188,8 @@ class DataBaseInteraction:
                 ) -> None:
 
         self.db_path: str = D.DatabaseConnection.DB_PATH
-        self.host: str = D.DatabaseConnection.LOCALHOST
+        # self.host: str = D.DatabaseConnection.LOCALHOST
+        self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
         self.port: int = D.DatabaseConnection.PORT
