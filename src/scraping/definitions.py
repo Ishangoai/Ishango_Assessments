@@ -75,9 +75,9 @@ class DatabaseConnection(str, enum.Enum):
 
     # Docker Postgres Database connection
     LOCALHOST = 'localhost'
-    HOST = os.getenv('POSTGRES_HOST')
-    PORT = "5432"
-    DB_NAME = "ishango"
+    HOST = 'pg-docker'
+    PORT = '5432'
+    DB_NAME = 'ishango'
 
 
 class DatabaseTypes(str, enum.Enum):
@@ -87,7 +87,7 @@ class DatabaseTypes(str, enum.Enum):
 
     # Possible database types:
     SQLITE = 'sqlite'
-    POSTGRES = 'postgresql+psycopg2'
+    POSTGRES = 'postgresql'
 
 
 class DatabaseTables(str, enum.Enum):
