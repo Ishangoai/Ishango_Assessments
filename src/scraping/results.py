@@ -39,5 +39,5 @@ def extract_results(
 
 
 if __name__ == '__main__':
-    time.sleep(45)
+    time.sleep(120)
     extract_results(db_type=D.DatabaseTypes.POSTGRES, save_to_file=False)
