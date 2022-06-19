@@ -73,7 +73,6 @@ jobs:
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
             -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            -p 5432:5432 \
             -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data \
             --name pg_docker \
             postgres

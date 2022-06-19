@@ -229,13 +229,14 @@ class DataBaseInteraction:
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             self.db_engine = sqlalchemy.create_engine(
-                '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango 
+                # '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango
+                '{}://{}:{}@{}/{}'  # postgresql://postgres:xxxx@pg_docker/ishango 
                 .format(
                     self.db_type,
                     self.user,
                     self.password,
                     self.host,
-                    self.port,
+                    # self.port,
                     self.db_name
                     )
                 )
