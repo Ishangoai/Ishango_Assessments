@@ -87,7 +87,7 @@ class DatabaseTypes(str, enum.Enum):
 
     # Possible database types:
     SQLITE = 'sqlite'
-    POSTGRES = 'postgresql'
+    POSTGRES = 'postgresql+psycopg2'
 
 
 class DatabaseTables(str, enum.Enum):
