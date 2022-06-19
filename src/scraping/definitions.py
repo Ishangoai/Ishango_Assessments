@@ -75,7 +75,7 @@ class DatabaseConnection(str, enum.Enum):
 
     # Docker Postgres Database connection
     LOCALHOST = 'localhost'
-    HOST = 'pg-docker'
+    HOST = 'pg_docker'
     PORT = '5432'
     DB_NAME = 'ishango'
 
