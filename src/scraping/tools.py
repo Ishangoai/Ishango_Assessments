@@ -188,8 +188,8 @@ class DataBaseInteraction:
                 ) -> None:
 
         self.db_path: str = D.DatabaseConnection.DB_PATH
-        # self.host: str = D.DatabaseConnection.LOCALHOST
-        self.host: str = D.DatabaseConnection.HOST
+        self.host: str = D.DatabaseConnection.LOCALHOST
+        # self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
         self.port: int = D.DatabaseConnection.PORT
@@ -229,7 +229,7 @@ class DataBaseInteraction:
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             self.db_engine = sqlalchemy.create_engine(
-                '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg-docker:5432/ishango 
+                '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango 
                 .format(
                     self.db_type,
                     self.user,
