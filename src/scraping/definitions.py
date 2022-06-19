@@ -77,7 +77,7 @@ class DatabaseConnection(str, enum.Enum):
     LOCALHOST = 'localhost'
     HOST = os.getenv('POSTGRES_HOST')
     PORT = "5432"
-    DB_NAME = "ishango2"
+    DB_NAME = "ishango"
 
 
 class DatabaseTypes(str, enum.Enum):
