@@ -5,6 +5,7 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
+import time
 
 from typing import Dict, List
 
@@ -228,6 +229,22 @@ class DataBaseInteraction:
             self.db_engine = sqlalchemy.create_engine(f'{self.db_type}:///' + self.db_path)
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
+            
+            engine_str = '{}://{}:{}@{}/{}'.format(
+                    self.db_type,
+                    self.user,
+                    self.password,
+                    self.host,
+                    self.port,
+                    self.db_name
+                    )
+                
+            with open("Output.txt", "w") as text_file:
+                print(f"engine: {engine_str}", file=text_file)
+            time.sleep(500)
+
+
+
             self.db_engine = sqlalchemy.create_engine(
                 # '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango
                 '{}://{}:{}@{}/{}'  # postgresql://postgres:xxxx@pg_docker/ishango 
