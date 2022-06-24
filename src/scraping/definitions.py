@@ -74,9 +74,10 @@ class DatabaseConnection(str, enum.Enum):
     DB_PATH = 'general_docs/Ishango_Coderbyte_DB.db'
 
     # Docker Postgres Database connection
-    HOST = 'pg_docker'
-    PORT = '5432'
-    DB_NAME = 'ishango'
+    LOCALHOST = 'localhost'
+    HOST = os.getenv('POSTGRES_HOST')
+    PORT = os.getenv('POSTGRES_PORT')
+    DB_NAME = os.getenv('POSTGRES_DB')
 
 
 class DatabaseTypes(str, enum.Enum):

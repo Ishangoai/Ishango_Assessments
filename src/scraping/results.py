@@ -5,7 +5,6 @@ Because the coderbyte API costs $200/month, this script can save Ishango costs.
 '''
 import scraping.definitions as D
 import scraping.tools as T
-import time
 
 
 def extract_results(

@@ -5,7 +5,6 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
-import time
 
 from typing import Dict, List
 
@@ -200,7 +199,7 @@ class DataBaseInteraction:
 
     def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
         """
-        Calls two auxilary methods to connect and then convert the pandas
+        Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
 
         Args:
@@ -228,21 +227,23 @@ class DataBaseInteraction:
             self.db_engine = sqlalchemy.create_engine(f'{self.db_type}:///' + self.db_path)
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
-
-            engine_str = f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"        
-            # postgresql://postgres:xxx@pg_docker:5432/ishango
-
-            # with open("output.txt", "w") as text_file:
-            #     print(f"engine: {engine_str}", file=text_file)
-            # time.sleep(500)
-                                                     
-            self.db_engine = sqlalchemy.create_engine(engine_str)
+            self.db_engine = sqlalchemy.create_engine(
+                 '{}://{}:{}@{}:{}/{}'
+                 .format(
+                     self.db_type,
+                     self.user,
+                     self.password,
+                     self.host,
+                     self.port,
+                     self.db_name
+                     )
+                 )
 
     def dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
         and saves it into a local database using the Pandas .to_sql method,
-        passing in table_nameand db_engine
+        passing in table_name and db_engine
         """
 
         self.dataframe.to_sql(
@@ -251,4 +252,3 @@ class DataBaseInteraction:
                     if_exists='replace',
                     index=False
                     )
-
