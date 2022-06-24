@@ -192,7 +192,7 @@ class DataBaseInteraction:
         # self.host: str = D.DatabaseConnection.LOCALHOST
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
-        self.password: str = C.Payload.password
+        self.password: str = C.Postgres.PASS
         self.port: int = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
         self.dataframe: pd.DataFrame = dataframe
