@@ -236,7 +236,7 @@ class DataBaseInteraction:
                     self.user,
                     self.password,
                     self.host,
-                    # self.port,
+                    self.port,
                     self.db_name
                     )
                 )
