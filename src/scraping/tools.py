@@ -230,7 +230,7 @@ class DataBaseInteraction:
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             
-            engine_str = '{}://{}:{}@{}/{}'.format(
+            engine_str = '{}://{}:{}@{}:{}/{}'.format(
                     self.db_type,
                     self.user,
                     self.password,
@@ -238,7 +238,7 @@ class DataBaseInteraction:
                     self.port,
                     self.db_name
                     )
-                
+                    
             with open("Output.txt", "w") as text_file:
                 print(f"engine: {engine_str}", file=text_file)
             time.sleep(500)
