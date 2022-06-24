@@ -199,7 +199,7 @@ class DataBaseInteraction:
 
     def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
         """
-        Calls two auxilary methods to connect and then convert the pandas
+        Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
 
         Args:
@@ -228,22 +228,22 @@ class DataBaseInteraction:
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             self.db_engine = sqlalchemy.create_engine(
-                '{}://{}:{}@{}:{}/{}'
-                .format(
-                    self.db_type,
-                    self.user,
-                    self.password,
-                    self.host,
-                    self.port,
-                    self.db_name
-                    )
-                )
+                 '{}://{}:{}@{}:{}/{}'
+                 .format(
+                     self.db_type,
+                     self.user,
+                     self.password,
+                     self.host,
+                     self.port,
+                     self.db_name
+                     )
+                 )
 
     def dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
         and saves it into a local database using the Pandas .to_sql method,
-        passing in table_nameand db_engine
+        passing in table_name and db_engine
         """
 
         self.dataframe.to_sql(

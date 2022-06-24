@@ -1,16 +1,16 @@
 # code example taken from: https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
 
-name: Create and publish a Docker image to Github Container Registery (GHCR)
+name: Build, Publish, and Deploy a Docker Image
 
 on:
   push:
-    branches: [ development ] # to be changed to "main" after we're happy with this file?
-  pull_request: # line to be deleted before merging?
-    branches: [ development ] # line to be deleted before merging?
+    branches: [ development ] 
+  pull_request: 
+    branches: [ development ] 
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}  # Ishangoai/Ishango_Assessments
 
 jobs:
   build-and-push-image:
@@ -27,8 +27,8 @@ jobs:
         uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ github.actor }}  # username of the user that initiated the workflow run, e.g. oliverangelil
+          password: ${{ secrets.GITHUB_TOKEN }}  # expires when a job finishes
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -44,6 +44,48 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  deploy:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Deploy to Digital Ocean droplet via SSH action
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: root
+          key: ${{ secrets.DO_PRIVATE_SSHKEY }}
+          port: 22
+          script: |
+            docker pull ${{ steps.meta.outputs.tags }}
+            docker pull postgres:latest
+            
+            docker network create mynet 
 
-
+            docker start ${{ secrets.POSTGRES_HOST }} || \
+            docker run -d --rm \
+            --net mynet \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
+            -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            -p 5432:5432 \
+            -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data \
+            --name ${{ secrets.POSTGRES_HOST }} \
+            postgres
+            
+            docker run -d -t -i \
+            --net mynet \
+            -e ISHANGO_USER=${{ secrets.ISHANGO_USER }} \
+            -e ISHANGO_PASS=${{ secrets.ISHANGO_PASS }} \
+            -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            -e POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASS }} \
+            -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            --name ishango_app \
+            ${{ steps.meta.outputs.tags }}
