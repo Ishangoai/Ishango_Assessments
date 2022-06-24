@@ -232,9 +232,9 @@ class DataBaseInteraction:
             engine_str = f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"        
             # postgresql://postgres:xxx@pg_docker:5432/ishango
 
-            with open("output.txt", "w") as text_file:
-                print(f"engine: {engine_str}", file=text_file)
-            time.sleep(500)
+            # with open("output.txt", "w") as text_file:
+            #     print(f"engine: {engine_str}", file=text_file)
+            # time.sleep(500)
                                                      
             self.db_engine = sqlalchemy.create_engine(engine_str)
 
