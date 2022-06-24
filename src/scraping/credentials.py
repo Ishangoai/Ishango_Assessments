@@ -34,4 +34,4 @@ class Postgres(str, enum.Enum):
     """
 
     USER = os.getenv('POSTGRES_USER')
-    PASS = os.getenv('TEST_PASS')
+    PASS = os.getenv('TEST_PASSS')
