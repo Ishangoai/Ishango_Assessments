@@ -189,7 +189,6 @@ class DataBaseInteraction:
                 ) -> None:
 
         self.db_path: str = D.DatabaseConnection.DB_PATH
-        # self.host: str = D.DatabaseConnection.LOCALHOST
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
@@ -229,36 +228,15 @@ class DataBaseInteraction:
             self.db_engine = sqlalchemy.create_engine(f'{self.db_type}:///' + self.db_path)
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
-            
-            engine_str = '{}://{}:{}@{}:{}/{}'.format(
-                    self.db_type,
-                    self.user,
-                    self.password,
-                    self.host,
-                    self.port,
-                    self.db_name
-                    )
 
             engine_str = f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"        
+            # postgresql://postgres:xxx@pg_docker:5432/ishango
 
-            with open("Output.txt", "w") as text_file:
-                print(f"engine: {engine_str}", file=text_file)
-            time.sleep(500)
-
-
-#                                          postgresql://postgres:None@pg_docker:5432/ishango
-            self.db_engine = sqlalchemy.create_engine(
-                # '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango
-                '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker/ishango 
-                .format(
-                    self.db_type,
-                    self.user,
-                    self.password,
-                    self.host,
-                    self.port,
-                    self.db_name
-                    )
-                )
+            # with open("output.txt", "w") as text_file:
+            #     print(f"engine: {engine_str}", file=text_file)
+            # time.sleep(500)
+            #                                          
+            self.db_engine = sqlalchemy.create_engine(engine_str)
 
     def dataframe_to_db(self) -> None:
         """

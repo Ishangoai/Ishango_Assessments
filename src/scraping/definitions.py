@@ -74,7 +74,6 @@ class DatabaseConnection(str, enum.Enum):
     DB_PATH = 'general_docs/Ishango_Coderbyte_DB.db'
 
     # Docker Postgres Database connection
-    LOCALHOST = 'localhost'
     HOST = 'pg_docker'
     PORT = '5432'
     DB_NAME = 'ishango'
