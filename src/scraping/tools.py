@@ -192,7 +192,7 @@ class DataBaseInteraction:
         # self.host: str = D.DatabaseConnection.LOCALHOST
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
-        self.password: str = C.Postgres.PASS
+        self.password: str = C.Payload.password
         self.port: int = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
         self.dataframe: pd.DataFrame = dataframe
@@ -246,7 +246,7 @@ class DataBaseInteraction:
             time.sleep(500)
 
 
-
+#                                          postgresql://postgres:None@pg_docker:5432/ishango
             self.db_engine = sqlalchemy.create_engine(
                 # '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango
                 '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker/ishango 
