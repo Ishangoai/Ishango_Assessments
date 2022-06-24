@@ -238,7 +238,9 @@ class DataBaseInteraction:
                     self.port,
                     self.db_name
                     )
-                    
+
+            engine_str = f"{self.db_type}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"        
+
             with open("Output.txt", "w") as text_file:
                 print(f"engine: {engine_str}", file=text_file)
             time.sleep(500)
@@ -247,7 +249,7 @@ class DataBaseInteraction:
 
             self.db_engine = sqlalchemy.create_engine(
                 # '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango
-                '{}://{}:{}@{}/{}'  # postgresql://postgres:xxxx@pg_docker/ishango 
+                '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker/ishango 
                 .format(
                     self.db_type,
                     self.user,
