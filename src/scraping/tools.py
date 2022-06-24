@@ -245,6 +245,7 @@ class DataBaseInteraction:
                 print(f"engine: {engine_str}", file=text_file)
             time.sleep(500)
 
+
 #                                          postgresql://postgres:None@pg_docker:5432/ishango
             self.db_engine = sqlalchemy.create_engine(
                 # '{}://{}:{}@{}:{}/{}'  # postgresql://postgres:xxxx@pg_docker:5432/ishango
