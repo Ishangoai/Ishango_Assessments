@@ -70,7 +70,7 @@ jobs:
           ssh_public_key: ${{ secrets.DO_PUBLIC_SSHKEY }}
           deployment_mode: docker-compose
           stack_file_name: docker-compose.yml
-          copy_stack_file: 'true'
+          copy_stack_file: 'false'
           args: up -d
           docker_prune: 'false'
           pull_images_first: 'false'
