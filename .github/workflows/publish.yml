@@ -48,6 +48,10 @@ jobs:
     #needs: build-and-push-image
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
@@ -62,7 +66,7 @@ jobs:
           ssh_public_key: ${{ secrets.DO_PUBLIC_SSHKEY }}
           deployment_mode: docker-compose
           stack_file_name: docker-compose.yml
-          copy_stack_file: 'true'
+          #copy_stack_file: 'true'
           args: up -d
           docker_prune: 'false'
           pull_images_first: 'true'
