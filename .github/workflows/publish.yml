@@ -59,7 +59,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Deploy to Digital Ocean droplet
-        uses: wshihadeh/docker-deployment-action@v1
+        uses: wshihadeh/docker-deployment-action@v2
         with:
           remote_docker_host: root@${{ secrets.DO_HOST }}
           ssh_private_key: ${{ secrets.DO_PRIVATE_SSHKEY }}
