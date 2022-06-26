@@ -61,6 +61,7 @@ jobs:
           ssh_private_key: ${{ secrets.DO_PRIVATE_SSHKEY }}
           ssh_public_key: ${{ secrets.DO_PUBLIC_SSHKEY }}
           deployment_mode: docker-compose
+          stack_file_name: docker-compose.yml
           args: up -d
           docker_prune: 'false'
           pull_images_first: 'true'
