@@ -69,7 +69,7 @@ jobs:
           copy_stack_file: 'true'
           args: up -d
           docker_prune: 'true'
-          pull_images_first: 'false'
+          pull_images_first: 'true'
 
 
       # - name: Deploy to Digital Ocean droplet via SSH action
