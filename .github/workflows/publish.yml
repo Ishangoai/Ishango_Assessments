@@ -68,7 +68,7 @@ jobs:
           stack_file_name: docker-compose.yml
           copy_stack_file: 'true'
           args: up -d
-          docker_prune: 'true'
+          docker_prune: 'false'
           pull_images_first: 'true'
 
 
