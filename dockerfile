@@ -2,6 +2,7 @@
 # (we could potentially specify a version, e.g. 3.10.4-slim, but I had problems
 # installing the app as a package if I did so)
 FROM python:latest
+RUN apt-get update && apt-get -y install cron
 
 # Set the working directory for the app
 WORKDIR /coderbyte_ishango
@@ -15,4 +16,9 @@ RUN pip install -r ./requirements.txt
 RUN pip install -e .
 
 # Run the App
-CMD ["python", "./src/scraping/results.py"]
+RUN chmod 0644 /coderbyte_ishango/crontab
+RUN crontab /coderbyte_ishango/crontab
+
+CMD ["cron", "-f"]
+
+#CMD ["python", "./src/scraping/results.py"]
