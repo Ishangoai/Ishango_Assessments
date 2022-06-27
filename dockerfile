@@ -21,4 +21,4 @@ RUN crontab /coderbyte_ishango/crontab
 
 CMD ["cron", "-f"]
 
-#CMD ["python", "./src/scraping/results.py"]
+#CMD ["python", "/coderbyte_ishango/src/scraping/results.py"]
