@@ -20,9 +20,5 @@ ENTRYPOINT ["bash", "/coderbyte_ishango/entrypoint.sh"]
 #CMD ["cron", "-f"]
 
 # Run the App
-RUN chmod 0644 /coderbyte_ishango/crontab
+#RUN chmod 0644 /coderbyte_ishango/crontab
 RUN crontab /coderbyte_ishango/crontab
-
-
-
-#CMD ["python", "/coderbyte_ishango/src/scraping/results.py"]
