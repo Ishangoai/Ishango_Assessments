@@ -11,14 +11,12 @@ WORKDIR /coderbyte_ishango
 COPY . .
 
 # Install the required libraries and the module itself (necessary
-# to be able to run the tests with pytes)
-
+# to be able to run the tests with pytest)
 RUN pip install -r ./requirements.txt
 RUN pip install -e .
 
+# save environment variables to be used by cronjob (https://stackoverflow.com/a/41938139/5392289)
 ENTRYPOINT ["bash", "/coderbyte_ishango/entrypoint.sh"]
-#CMD ["cron", "-f"]
 
 # Run the App
-#RUN chmod 0644 /coderbyte_ishango/crontab
 RUN crontab /coderbyte_ishango/crontab
