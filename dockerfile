@@ -12,6 +12,7 @@ COPY . .
 
 # Install the required libraries and the module itself (necessary
 # to be able to run the tests with pytes)
+
 RUN pip install -r ./requirements.txt
 RUN pip install -e .
 
@@ -19,6 +20,7 @@ RUN pip install -e .
 RUN chmod 0644 /coderbyte_ishango/crontab
 RUN crontab /coderbyte_ishango/crontab
 
+ENTRYPOINT ["/coderbyte_ishango/entrypoint.sh"]
 CMD ["cron", "-f"]
 
 #CMD ["python", "/coderbyte_ishango/src/scraping/results.py"]
