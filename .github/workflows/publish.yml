@@ -14,8 +14,8 @@ env:
 
 jobs:
   build-and-push-image:
-  if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     permissions:
       contents: read
       packages: write
@@ -46,9 +46,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
-  if: ${{ github.actor != 'dependabot[bot]' }}
     needs: build-and-push-image
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
