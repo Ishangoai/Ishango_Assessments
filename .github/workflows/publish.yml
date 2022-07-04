@@ -78,6 +78,8 @@ jobs:
             --name ${{ secrets.POSTGRES_HOST }} \
             postgres
             
+            docker container rm -f ishango_app || true
+            
             docker run -d -t -i \
             --net mynet \
             -e ISHANGO_USER=${{ secrets.ISHANGO_USER }} \

@@ -1,0 +1,2 @@
+# cron in docker: https://stackoverflow.com/a/37458519/5392289
+0 22 * * * perl -le 'sleep rand 9000' && /usr/local/bin/python /coderbyte_ishango/src/scraping/results.py > /proc/1/fd/1 2>/proc/1/fd/2
