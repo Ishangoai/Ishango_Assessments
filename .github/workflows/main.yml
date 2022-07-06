@@ -49,3 +49,11 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+      env:
+        ISHANGO_USER: ${{ secrets.ISHANGO_USER }}
+        ISHANGO_PASS: ${{ secrets.ISHANGO_PASS }}
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASS }}
