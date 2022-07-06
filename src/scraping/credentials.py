@@ -24,8 +24,8 @@ class Payload(str, enum.Enum):
     Placeholder for the login credentials
     """
 
-    username = os.getenv('ISHANGO_USER')
-    password = os.getenv('ISHANGO_PASS')
+    username = os.environ['ISHANGO_USER']
+    password = os.environ['ISHANGO_PASS']
 
 
 class Postgres(str, enum.Enum):
@@ -33,5 +33,5 @@ class Postgres(str, enum.Enum):
     Placeholder for the login credentials
     """
 
-    USER = os.getenv('POSTGRES_USER')
-    PASS = os.getenv('POSTGRES_PASSWORD')
+    USER = os.environ['POSTGRES_USER']
+    PASS = os.environ['POSTGRES_PASSWORD']
