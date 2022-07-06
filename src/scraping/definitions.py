@@ -76,7 +76,7 @@ class DatabaseConnection(str, enum.Enum):
     # Docker Postgres Database connection
     LOCALHOST = 'localhost'
     HOST = os.environ['POSTGRES_HOST']
-    PORT = os.environ('POSTGRES_PORT')
+    PORT = os.environ['POSTGRES_PORT']
     DB_NAME = os.environ['POSTGRES_DB']
 
 
