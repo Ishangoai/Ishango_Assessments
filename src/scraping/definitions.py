@@ -1,11 +1,10 @@
 import os
 import enum
-from typing import Dict, List
 
 # Constants and strings should be stored in this file
 
 
-class Paths(str, enum.Enum):
+class Paths(str, enum.Enum): 
     """
     Placeholder for the web links/paths to be accessed,
     filenames and the path to read/store any files
@@ -25,7 +24,7 @@ class Paths(str, enum.Enum):
     ghana_2022_export_path = ''.join([destination_folder, ghana_2022_export_file])
 
 
-class Assessments(List, enum.Enum):
+class Assessments(list[str], enum.Enum): 
     """
     Placeholder for the assessment links
     """
@@ -37,7 +36,7 @@ class Assessments(List, enum.Enum):
     ]
 
 
-class PandasSchemas(Dict, enum.Enum):
+class PandasSchemas(dict[str, str], enum.Enum):
     """
     Placeholder for the Pandas dataframe schemas
     """
