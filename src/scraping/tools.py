@@ -6,8 +6,6 @@ import json
 import functools
 import sqlalchemy
 
-from typing import Optional, Match
-
 import scraping.credentials as C
 import scraping.definitions as D
 
