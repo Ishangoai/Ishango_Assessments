@@ -1,6 +1,5 @@
 import requests
 import scraping.definitions as D
-import scraping.credentials as C
 
 
 def test_tools_login():

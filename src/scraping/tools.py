@@ -6,6 +6,8 @@ import json
 import functools
 import sqlalchemy
 
+from typing import Iterable, MutableMapping
+
 import scraping.credentials as C
 import scraping.definitions as D
 
@@ -20,7 +22,7 @@ This file holds any main and accessory functions
 #################################################
 
 
-def login(debug: bool = False) -> requests.session:
+def login() -> requests.sessions.Session:
     """
     Connects to the main site and retrieves the pageToken,
     necessary to login into the test result pages.
@@ -30,21 +32,18 @@ def login(debug: bool = False) -> requests.session:
     the pageToken and that are used in the regex search.
 
     Args:
-        debug (bool): if True, it will return the status_code and not
-        the session object, for debugging purposes
 
     Returns:
-        s (requests.session): requests session that does the
+        s (requests.sessions.Session): requests session that does the
         cookie and token automated management.
     """
 
     # Using a requests session to keep the connection alive; it also
     # does the cookies management (post to payload, etc.) automatically
 
-    with requests.session() as session:
+    with requests.sessions.Session() as session:
         # Connect to the main site
         main_site = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).text
-        status_code = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).status_code
 
         # Retrieve necessary token - regex explanation:
         # search for all occurrences that match pattern within re.search
@@ -52,7 +51,6 @@ def login(debug: bool = False) -> requests.session:
         search = re.search(r'window\.__pageToken = "(.*?)";', main_site)
         assert search is not None
         pageToken = search.group(1)
-
 
         login_payload = {
             'username': C.Payload.username,
@@ -67,10 +65,10 @@ def login(debug: bool = False) -> requests.session:
 
         # returns the requests.session object unless in debug mode,
         # where it returns the session's status code
-        return session if not debug else status_code
+        return session
 
 
-def retrieve_and_union_results(assessments: list[str], session: requests.session) -> pd.DataFrame:
+def retrieve_and_union_results(assessments: Iterable[str], session: requests.sessions.Session) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -115,7 +113,7 @@ def retrieve_and_union_results(assessments: list[str], session: requests.session
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
+def pre_process_results(dataframe: pd.DataFrame, col_types: MutableMapping[str, str]) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
