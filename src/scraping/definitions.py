@@ -1,8 +1,6 @@
 import os
 import enum
 
-from typing import MutableMapping
-
 # Constants and strings should be stored in this file
 
 
@@ -38,7 +36,7 @@ class Assessments(tuple[str], enum.Enum):
     )
 
 
-class PandasSchemas(MutableMapping[str, str], enum.Enum):
+class PandasSchemas(enum.Enum):
     """
     Placeholder for the Pandas dataframe schemas
     """

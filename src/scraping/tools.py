@@ -6,7 +6,7 @@ import json
 import functools
 import sqlalchemy
 
-from typing import Iterable, MutableMapping
+from typing import Iterable
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -113,7 +113,7 @@ def retrieve_and_union_results(assessments: Iterable[str], session: requests.ses
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: MutableMapping[str, str]) -> pd.DataFrame:
+def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
