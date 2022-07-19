@@ -21,7 +21,7 @@ def extract_results(
 
     if pre_process:
         # pre_process results to be inserted into the database
-        results = T.pre_process_results(results, D.PandasSchemas.ghana_2022_schema)
+        results = T.pre_process_results(results, D.PandasSchemas.ghana_2022_schema.value)
 
     if save_to_db:
         # verify that pre-processing is done before saving to the database

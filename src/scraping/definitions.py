@@ -1,6 +1,5 @@
 import os
 import enum
-from typing import Dict, List
 
 # Constants and strings should be stored in this file
 
@@ -25,19 +24,19 @@ class Paths(str, enum.Enum):
     ghana_2022_export_path = ''.join([destination_folder, ghana_2022_export_file])
 
 
-class Assessments(List, enum.Enum):
+class Assessments(tuple[str], enum.Enum):
     """
     Placeholder for the assessment links
     """
 
-    ghana_2022_assessments = [
+    ghana_2022_assessments = (
         'dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz',
         'dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6',
         'dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3'
-    ]
+    )
 
 
-class PandasSchemas(Dict, enum.Enum):
+class PandasSchemas(enum.Enum):
     """
     Placeholder for the Pandas dataframe schemas
     """

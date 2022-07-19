@@ -6,7 +6,7 @@ import json
 import functools
 import sqlalchemy
 
-from typing import Dict, List
+from typing import Iterable
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -22,7 +22,7 @@ This file holds any main and accessory functions
 #################################################
 
 
-def login(debug: bool = False) -> requests.session:
+def login() -> requests.sessions.Session:
     """
     Connects to the main site and retrieves the pageToken,
     necessary to login into the test result pages.
@@ -32,26 +32,25 @@ def login(debug: bool = False) -> requests.session:
     the pageToken and that are used in the regex search.
 
     Args:
-        debug (bool): if True, it will return the status_code and not
-        the session object, for debugging purposes
 
     Returns:
-        s (requests.session): requests session that does the
+        s (requests.sessions.Session): requests session that does the
         cookie and token automated management.
     """
 
     # Using a requests session to keep the connection alive; it also
     # does the cookies management (post to payload, etc.) automatically
 
-    with requests.session() as session:
+    with requests.sessions.Session() as session:
         # Connect to the main site
         main_site = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).text
-        status_code = session.get(D.Paths.URL + D.Paths.LOGIN_PAGE).status_code
 
         # Retrieve necessary token - regex explanation:
         # search for all occurrences that match pattern within re.search
         # (.*?) will match any content. It is still unclear how "?" helps
-        pageToken = re.search(r'window\.__pageToken = "(.*?)";', main_site).group(1)
+        search = re.search(r'window\.__pageToken = "(.*?)";', main_site)
+        assert search is not None
+        pageToken = search.group(1)
 
         login_payload = {
             'username': C.Payload.username,
@@ -66,10 +65,10 @@ def login(debug: bool = False) -> requests.session:
 
         # returns the requests.session object unless in debug mode,
         # where it returns the session's status code
-        return session if not debug else status_code
+        return session
 
 
-def retrieve_and_union_results(assessments: List[str], session: requests.session) -> pd.DataFrame:
+def retrieve_and_union_results(assessments: Iterable[str], session: requests.sessions.Session) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -80,7 +79,7 @@ def retrieve_and_union_results(assessments: List[str], session: requests.session
     holds the assessment results, and that is used in the regex search.
 
     Args:
-        assessments (List[str]): list with the URLs pointing to each
+        assessments (list[str]): list with the URLs pointing to each
         assessment for with a set of results must be retrieved
 
         session (request.session): requests session containing does
@@ -94,7 +93,9 @@ def retrieve_and_union_results(assessments: List[str], session: requests.session
     results_list = []
     for assessment in assessments:
         response = session.get(D.Paths.URL + assessment).text
-        results = re.search(r"window\.__org_candidates = (.*?);", response).group(1)
+        search = re.search(r"window\.__org_candidates = (.*?);", response)
+        assert search is not None
+        results = search.group(1)
         results = json.loads(results)
         results = pd.json_normalize(results)
 
@@ -112,7 +113,7 @@ def retrieve_and_union_results(assessments: List[str], session: requests.session
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> pd.DataFrame:
+def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
@@ -124,7 +125,7 @@ def pre_process_results(dataframe: pd.DataFrame, col_types: Dict[str, str]) -> p
         dataframe (pd.DataFrame): union of multiple dataframes, one for
         each assessment with the students' information and results.
 
-        col_types (Dict[str, str]): Key-value pair of each columns name
+        col_types (dict[str, str]): Key-value pair of each columns name
         and correspondent dtype. Should be revised for each set of assessment.
 
     Returns:
@@ -191,7 +192,7 @@ class DataBaseInteraction:
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
-        self.port: int = D.DatabaseConnection.PORT
+        self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
         self.dataframe: pd.DataFrame = dataframe
         self.table_name: str = table_name
