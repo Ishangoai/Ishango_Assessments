@@ -269,7 +269,6 @@ class GoogleSheets(DataBaseInteraction):
         self.querytable = df
 
     def writetosheets(self):
-        # SHEETS = discovery.build('sheets', 'v4', http=creds.authorize(Http()))
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
         creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
