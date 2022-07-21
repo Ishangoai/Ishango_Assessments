@@ -1,3 +1,4 @@
+import os
 import re
 import requests
 import numpy as np
@@ -271,8 +272,8 @@ class GoogleSheets(DataBaseInteraction):
         creds = service_account.Credentials.from_service_account_file(os.environ['SHEETS_API_JSON'], scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
-        d = {'col1': [1, 2], 'col2': [3, 4]}
-        df = pd.DataFrame(data=d)
+        # d = {'col1': [1, 2], 'col2': [3, 4]}
+        # df = pd.DataFrame(data=d)
         data = {'values': self.query_table.values.tolist()}
 
         spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
@@ -281,5 +282,4 @@ class GoogleSheets(DataBaseInteraction):
             spreadsheetId=spreadsheet_id, range="test!A1",
             valueInputOption="USER_ENTERED", body=data).execute()
 
-
-        
+        return result
