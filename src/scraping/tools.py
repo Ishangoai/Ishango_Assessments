@@ -199,7 +199,7 @@ class DataBaseInteraction:
         self,
         dataframe: pd.DataFrame,
         table_name: str
-        ) -> None:
+            ) -> None:
         """
         Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
@@ -256,6 +256,7 @@ class DataBaseInteraction:
                     index=False
                     )
 
+
 class GoogleSheets(DataBaseInteraction):
     
     def __init__(self) -> None:
@@ -269,7 +270,7 @@ class GoogleSheets(DataBaseInteraction):
         # SHEETS = discovery.build('sheets', 'v4', http=creds.authorize(Http()))
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-        creds = service_account.Credentials.from_service_account_file(os.environ['SHEETS_API_JSON'], scopes=SCOPES)
+        creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
         # d = {'col1': [1, 2], 'col2': [3, 4]}

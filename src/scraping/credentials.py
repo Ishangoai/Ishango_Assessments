@@ -35,5 +35,3 @@ class Postgres(str, enum.Enum):
 
     USER = os.environ['POSTGRES_USER']
     PASS = os.environ['POSTGRES_PASSWORD']
-
-

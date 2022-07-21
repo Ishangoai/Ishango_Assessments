@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "ishango-357008",
+  "private_key_id": "0e45bcb4db1b8deb23670dae279e34f4b143950a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDHNEcBdx5mn+Dl\nuu3X5It+nVqMbe2tWPX5KQH5FzVqM8WpKRp9jh6nuXT4FmNJjNQ2FW8/psP1xTqk\nLIOz15ZZZljQW2f/aeSuUEdJE6tbC4p/TfIMGZ/0Zx8pTuQV7AJQXfnVa8ctPL2a\n8/OCRCkkiIdUBwVdN3eEkzkrJf00vdlbn2QJg+Afd1ybR3CNxST/F2S47Y/TeVmY\nfLI0bkN22HPrXCQ4ihVXFVjAuLEGjHsR0GehK5wwrJvhx6SRDaXVRNgj8Y8gyugb\n7Lc1oKdvNz/RkhlQzhyJg8bsnuyQVihVh4KCz7rVfU8ztW5CRoJHfjBRC9iQVpLr\nygS0xSwnAgMBAAECggEACInEFVr+sZVetVoKwbspA3dJH0XC7zAl8tUAIaYOAwxP\nB44cdY823yeCzPNgtBFWMy8+AnNqaMlYVxsVVgsChbhuTBfu4DKwu4vzUj2GlbNr\n70LvAffDNF2LJ2EbQ5lHDBzLDYu+EMFOuyqDoGy9erRjYIWghDtRYxxQUfoh3TXG\nhYTNYzDGE9Vn8RaTrMdFbbxC04jdY3gG/KCyPJHjK0a5oP00fHL/x1UmrLc0uroH\nNowpKLwNtA4vQIun+AuWdKRuuRvDYymGlTSsPHsLhWKKC0FiHx+/e4XKQCRXoztx\n39olK2ir1h3Vz6ljvG7XKqsgyy2/6Xo9kgneWXb1kQKBgQD0C/K29LgLex3a9wzJ\n2uFRJmYturqUx8Z8Yg8h4MbwlU4ppaYAiR3zwpisPPgcnCKJ6iZcRWMrx0hHfkOS\ngTXlmZ4shblx8j8XRIGfaFZQ/GiqaBUrcmy+CtF8VBdkSBqupCKrQVTdESDWXd9w\nzwBMZ7Sz2C4O9j5mpz1kzNyueQKBgQDQ9g8FHnEgUgKVX3cv01bSYz8nJ2usjCl7\nLp6EFyDU01UqrJ5mnD1bmmrPhdv4lHMPogZ7jlgHaduZIS1x32Ymd1rnQzi07fBc\nk65m5McaKys6wDXPHBdPzCML/ejLTj1hJoBcoLsviPiAuAQo2NaDv64xzdis9vKe\n5BZ6PIuHnwKBgF/nGhhfjrukRBU6JGJmi0iyiFDMImo5H3zdpAiyJjuA0Nh46gUn\n3Qdfn1OAGhhUGxaLV0vHULNxeqvtqGw4Lo/tkET6v+dRRQ3FtBKKk/D7X74nbLpI\nGweLhMsQ2Khl1WZvxdf6sni1NGxJM3dHQVzFHDPYbjEe/2KjsfKcttQxAoGBAI6A\nTuvpv7IP220sZmZ6FIpzXj0AWCCakStNNpLUBvK8kCcDAx7sy7ctjkupeMKD0hfG\nIe+eug+MNFKwWoJ+m/X9jUOLBx/z5+fqWpQWzmTdLaTqMYflG0yy5O+nn1sOJzOa\ngw0oG58mJHn7g/KrNVcxn8SdIXeLDRgoad/AbFL3AoGBAMKIpovvN2Ofmx9hkoqz\nt+J1WwZpYWdLP4yYuhv4LXQdGHSui0cktIBgRysEysrRK36DAXpf+81XH7S5BDNG\nt4F3kOIcO5x7AFXaiq5xo3EOY/5l90XkodCuNzb5JQIfkRdCGS5lFUZQRN7S9mLT\nXJ8r/7lV3SCMtOR9SjYqI4Ja\n-----END PRIVATE KEY-----\n",
+  "client_email": "ishango-service-account@ishango-357008.iam.gserviceaccount.com",
+  "client_id": "115412258372671355304",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ishango-service-account%40ishango-357008.iam.gserviceaccount.com"
+}
