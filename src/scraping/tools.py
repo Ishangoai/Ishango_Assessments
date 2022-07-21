@@ -1,4 +1,3 @@
-import os
 import re
 import requests
 import numpy as np
@@ -258,13 +257,15 @@ class DataBaseInteraction:
 
 
 class GoogleSheets(DataBaseInteraction):
-    
     def __init__(self) -> None:
         super().__init__()
 
     def read_table(self, table_name: str):
         self.db_connect()
-        self.querytable = pd.read_sql(table_name, con=self.db_engine)
+        df = pd.read_sql(table_name, con=self.db_engine)
+        df['date_joined'] = df['date_joined'].dt.strftime('%Y-%m-%d')
+        df['date_link_sent'] = df['date_link_sent'].dt.strftime('%Y-%m-%d')
+        self.querytable = df
 
     def writetosheets(self):
         # SHEETS = discovery.build('sheets', 'v4', http=creds.authorize(Http()))
@@ -273,8 +274,12 @@ class GoogleSheets(DataBaseInteraction):
         creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
-        # d = {'col1': [1, 2], 'col2': [3, 4]}
+        # Ricardo, this works!
+        # d = {'col1': [1, 2, 7], 'col2': [3, 4, 9]}
         # df = pd.DataFrame(data=d)
+        # data = {'values': df.values.tolist()}
+
+        # this does not!
         data = {'values': self.querytable.values.tolist()}
 
         spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
