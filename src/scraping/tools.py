@@ -275,12 +275,6 @@ class GoogleSheets(DataBaseInteraction):
         creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
-        # Ricardo, this works!
-        # d = {'col1': [1, 2, 7], 'col2': [3, 4, 9]}
-        # df = pd.DataFrame(data=d)
-        # data = {'values': df.values.tolist()}
-
-        # this does not!
         data = {'values': self.querytable.values.tolist()}
 
         spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
