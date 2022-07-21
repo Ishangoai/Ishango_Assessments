@@ -189,13 +189,13 @@ class DataBaseInteraction:
         self.password: str = C.Postgres.PASS
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.db_engine: sqlalchemy.engine.base.Engine = None
+        self.db_engine: sqlalchemy.engine.base.Engine = None,
+        self.db_type: str = D.DatabaseTypes.POSTGRES
 
     def save_results_to_db(
         self,
         dataframe: pd.DataFrame,
-        table_name: str,
-        db_type: str = D.DatabaseTypes.POSTGRES
+        table_name: str
         ) -> None:
         """
         Calls two auxiliary methods to connect and then convert the pandas
@@ -210,7 +210,6 @@ class DataBaseInteraction:
         # Create a connection engine
         self.dataframe = dataframe
         self.table_name = table_name
-        self.db_type = db_type
         self.db_connect()
 
         # Save the dataframe into the database
