@@ -265,6 +265,7 @@ class GoogleSheets(DataBaseInteraction):
         df = pd.read_sql(table_name, con=self.db_engine)
         df['date_joined'] = df['date_joined'].dt.strftime('%Y-%m-%d')
         df['date_link_sent'] = df['date_link_sent'].dt.strftime('%Y-%m-%d')
+        df.replace(np.nan, 'N/A', inplace=True)
         self.querytable = df
 
     def writetosheets(self):
