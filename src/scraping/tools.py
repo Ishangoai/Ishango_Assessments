@@ -5,6 +5,8 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
 from typing import Iterable
 
@@ -262,6 +264,22 @@ class GoogleSheets(DataBaseInteraction):
         self.db_connect()
         self.querytable = pd.read_sql(table_name, con=self.db_engine)
 
+    def writetosheets(self):
+        # SHEETS = discovery.build('sheets', 'v4', http=creds.authorize(Http()))
+        SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+        creds = service_account.Credentials.from_service_account_file(os.environ['SHEETS_API_JSON'], scopes=SCOPES)
+        service = build('sheets', 'v4', credentials=creds)
+
+        d = {'col1': [1, 2], 'col2': [3, 4]}
+        df = pd.DataFrame(data=d)
+        data = {'values': self.query_table.values.tolist()}
+
+        spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
+        sheet = service.spreadsheets()
+        result = sheet.values().update(
+            spreadsheetId=spreadsheet_id, range="test!A1",
+            valueInputOption="USER_ENTERED", body=data).execute()
 
 
         
