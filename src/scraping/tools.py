@@ -182,23 +182,21 @@ class DataBaseInteraction:
     table_name (str): name of the table to be created/used in the database
     """
 
-    def __init__(
-        self,
-        dataframe: pd.DataFrame,
-        table_name: str
-                ) -> None:
-
+    def __init__(self) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.dataframe: pd.DataFrame = dataframe
-        self.table_name: str = table_name
         self.db_engine: sqlalchemy.engine.base.Engine = None
 
-    def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
+    def save_results_to_db(
+        self,
+        dataframe: pd.DataFrame,
+        table_name: str,
+        db_type: str = D.DatabaseTypes.POSTGRES
+        ) -> None:
         """
         Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
@@ -210,6 +208,8 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
+        self.dataframe = dataframe
+        self.table_name = table_name
         self.db_type = db_type
         self.db_connect()
 
@@ -253,3 +253,17 @@ class DataBaseInteraction:
                     if_exists='replace',
                     index=False
                     )
+
+class GoogleSheets(DataBaseInteraction):
+    
+    def __init__(self) -> None:
+        super().__init__()
+
+    def read_table(self, table_name: str):
+        self.table_name
+        self.db_connect()
+        self.querytable = pd.read_sql(self.table_name, con=self.engine)
+
+
+
+        
