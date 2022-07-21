@@ -274,7 +274,7 @@ class GoogleSheets(DataBaseInteraction):
 
         # d = {'col1': [1, 2], 'col2': [3, 4]}
         # df = pd.DataFrame(data=d)
-        data = {'values': self.query_table.values.tolist()}
+        data = {'values': self.querytable.values.tolist()}
 
         spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
         sheet = service.spreadsheets()
