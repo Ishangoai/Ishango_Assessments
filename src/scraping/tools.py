@@ -262,7 +262,7 @@ class GoogleSheets(DataBaseInteraction):
     def read_table(self, table_name: str):
         self.table_name
         self.db_connect()
-        self.querytable = pd.read_sql(self.table_name, con=self.engine)
+        self.querytable = pd.read_sql(self.table_name, con=self.db_engine)
 
 
 
