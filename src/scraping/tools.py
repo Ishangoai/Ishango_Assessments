@@ -262,33 +262,46 @@ class GoogleSheets(DataBaseInteraction):
     def __init__(self) -> None:
         super().__init__()
 
-    def read_table(self, table_name: str):
+    @staticmethod
+    def base64_to_json(b64) -> dict[str, str]:
+        decodedBytes = base64.b64decode(b64[1:-1])
+        decodedStr = decodedBytes.decode("ascii")
+        json_dict = json.loads(decodedStr)
+        return json_dict
+
+    def read_from_sql(self, table_name: str) -> None:
         self.db_connect()
         df = pd.read_sql(table_name, con=self.db_engine)
         df['date_joined'] = df['date_joined'].dt.strftime('%Y-%m-%d')
         df['date_link_sent'] = df['date_link_sent'].dt.strftime('%Y-%m-%d')
         df.replace(np.nan, 'N/A', inplace=True)
-        self.querytable = df
+        self.dataframe = df
 
     def writetosheets(self):
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
         b64 = os.environ['SHEETS_API_CREDENTIALS_B64']
-        decodedBytes = base64.b64decode(b64[1:-1])
-        decodedStr = decodedBytes.decode("ascii")
-        json_str = json.loads(decodedStr)
-        creds = service_account.Credentials.from_service_account_info(json_str, scopes=SCOPES)
+        json_dict = self.base64_to_json(b64)
+
+        # create service account credentials object
+        creds = service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+
+        # Construct a Resource for interacting with an API
         service = build('sheets', 'v4', credentials=creds)
 
-        column_names = self.querytable.columns.tolist()
-        values = self.querytable.to_numpy().tolist()
-        values.insert(0, column_names)
-        data = {'values': values}
+        # convert dataframe into list, with first list being column names
+        data = self.dataframe.to_numpy().tolist()
+        column_names = self.dataframe.columns.tolist()
+        data.insert(0, column_names)
 
-        spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
+        # instantiate class to interact with a resource
         sheet = service.spreadsheets()
+        
+        # write to google sheets
         result = sheet.values().update(
-            spreadsheetId=spreadsheet_id, range="test!A1",
-            valueInputOption="USER_ENTERED", body=data).execute()
+            spreadsheetId="12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4",
+            range="test!A1",
+            valueInputOption="USER_ENTERED",
+            body={'values': data}
+            ).execute()
 
         return result
