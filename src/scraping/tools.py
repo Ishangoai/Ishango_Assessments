@@ -277,7 +277,7 @@ class GoogleSheets(DataBaseInteraction):
         decodedBytes = base64.b64decode(b64[1:-1])
         decodedStr = decodedBytes.decode("ascii")
         json_str = json.loads(decodedStr)
-        creds = service_account.Credentials.from_service_account_file(json_str, scopes=SCOPES)
+        creds = service_account.Credentials.from_service_account_info(json_str, scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
         data = {'values': self.querytable.values.tolist()}
