@@ -274,7 +274,7 @@ class GoogleSheets(DataBaseInteraction):
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
         b64 = os.environ['SHEETS_API_CREDENTIALS_B64']
-        decodedBytes = base64.b64decode(b64)
+        decodedBytes = base64.b64decode(b64[1:-1])
         decodedStr = decodedBytes.decode("ascii")
         json_str = json.loads(decodedStr)
         creds = service_account.Credentials.from_service_account_file(json_str, scopes=SCOPES)
