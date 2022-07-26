@@ -280,7 +280,10 @@ class GoogleSheets(DataBaseInteraction):
         creds = service_account.Credentials.from_service_account_info(json_str, scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
-        data = {'values': self.querytable.values.tolist()}
+        column_names = self.querytable.columns.tolist()
+        values = self.querytable.to_numpy().tolist()
+        values.insert(0, column_names)
+        data = {'values': values}
 
         spreadsheet_id = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
         sheet = service.spreadsheets()
