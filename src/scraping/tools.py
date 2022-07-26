@@ -1,3 +1,5 @@
+import os
+import base64
 import re
 import requests
 import numpy as np
@@ -271,7 +273,11 @@ class GoogleSheets(DataBaseInteraction):
     def writetosheets(self):
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-        creds = service_account.Credentials.from_service_account_file("creds.json", scopes=SCOPES)
+        b64 = os.environ['SHEETS_API_CREDENTIALS_B64']
+        decodedBytes = base64.b64decode(b64[1:-1])
+        decodedStr = decodedBytes.decode("ascii")
+        json_str = json.loads(decodedStr)
+        creds = service_account.Credentials.from_service_account_file(json_str, scopes=SCOPES)
         service = build('sheets', 'v4', credentials=creds)
 
         data = {'values': self.querytable.values.tolist()}
