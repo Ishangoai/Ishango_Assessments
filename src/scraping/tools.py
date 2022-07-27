@@ -263,24 +263,24 @@ class GoogleSheets(DataBaseInteraction):
         super().__init__()
 
     @staticmethod
-    def base64_to_json(b64) -> dict[str, Any]:
-        decodedbytes = base64.b64decode(b64[1:-1])
-        decodedstr = decodedbytes.decode("ascii")
-        json_dict = json.loads(decodedstr)
+    def base64_to_json(b64) -> dict[str, str]:
+        decodedbytes: bytes = base64.b64decode(b64[1:-1])
+        decodedstr: str = decodedbytes.decode("ascii")
+        json_dict: dict[str, str] = json.loads(decodedstr)
         return json_dict
 
     def read_from_sql(self, table_name: str) -> None:
         self.db_connect()
-        df = pd.read_sql(table_name, con=self.db_engine)
+        df: pd.DataFrame = pd.read_sql(table_name, con=self.db_engine)
         df['date_joined'] = df['date_joined'].dt.strftime('%Y-%m-%d')
         df['date_link_sent'] = df['date_link_sent'].dt.strftime('%Y-%m-%d')
         df.replace(np.nan, 'N/A', inplace=True)
-        self.dataframe = df
+        self.dataframe: pd.DataFrame = df
 
-    def writetosheets(self):
-        SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-        b64 = os.environ['SHEETS_API_CREDENTIALS_B64']
-        json_dict = self.base64_to_json(b64)
+    def writetosheets(self) -> dict[str, Any]:
+        SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
+        b64: str = os.environ['SHEETS_API_CREDENTIALS_B64']
+        json_dict: dict[str, str] = self.base64_to_json(b64)
 
         # create service account credentials object
         creds = service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
@@ -289,15 +289,15 @@ class GoogleSheets(DataBaseInteraction):
         service = build('sheets', 'v4', credentials=creds)
 
         # convert dataframe into list, with first list being column names
-        data = self.dataframe.to_numpy().tolist()
-        column_names = self.dataframe.columns.tolist()
+        data: list[list[Any]] = self.dataframe.to_numpy().tolist()
+        column_names: list[str] = self.dataframe.columns.tolist()
         data.insert(0, column_names)
 
         # instantiate class to interact with a resource
         sheet = service.spreadsheets()
 
         # write to google sheets
-        result = sheet.values().update(
+        result: dict[str, Any] = sheet.values().update(
             spreadsheetId="12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4",
             range="test!A1",
             valueInputOption="USER_ENTERED",
