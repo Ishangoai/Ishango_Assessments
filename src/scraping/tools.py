@@ -54,12 +54,12 @@ def login() -> requests.sessions.Session:
         # (.*?) will match any content. It is still unclear how "?" helps
         search = re.search(r'window\.__pageToken = "(.*?)";', main_site)
         assert search is not None
-        pageToken = search.group(1)
+        pagetoken = search.group(1)
 
         login_payload = {
             'username': C.Payload.username,
             'password': C.Payload.password,
-            'pageToken': pageToken
+            'pageToken': pagetoken
         }
 
         # Post payload to login, retrieve status code
@@ -264,9 +264,9 @@ class GoogleSheets(DataBaseInteraction):
 
     @staticmethod
     def base64_to_json(b64) -> dict[str, str]:
-        decodedBytes = base64.b64decode(b64[1:-1])
-        decodedStr = decodedBytes.decode("ascii")
-        json_dict = json.loads(decodedStr)
+        decodedbytes = base64.b64decode(b64[1:-1])
+        decodedstr = decodedbytes.decode("ascii")
+        json_dict = json.loads(decodedstr)
         return json_dict
 
     def read_from_sql(self, table_name: str) -> None:
@@ -295,7 +295,7 @@ class GoogleSheets(DataBaseInteraction):
 
         # instantiate class to interact with a resource
         sheet = service.spreadsheets()
-        
+
         # write to google sheets
         result = sheet.values().update(
             spreadsheetId="12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4",
