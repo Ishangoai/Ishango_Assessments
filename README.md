@@ -19,3 +19,4 @@ Ishango wants to automatically (and periodically) retrieve the results of these 
 [![Main Python application](https://github.com/Ishangoai/Ishango_Assessments/actions/workflows/main.yml/badge.svg)](https://github.com/Ishangoai/Ishango_Assessments/actions/workflows/main.yml)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Ishangoai_Ishango_Assessments&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Ishangoai_Ishango_Assessments)
+
