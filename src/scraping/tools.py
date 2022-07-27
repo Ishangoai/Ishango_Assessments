@@ -10,7 +10,7 @@ import sqlalchemy
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
-from typing import Iterable
+from typing import Iterable, Any
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -263,7 +263,7 @@ class GoogleSheets(DataBaseInteraction):
         super().__init__()
 
     @staticmethod
-    def base64_to_json(b64) -> dict[str, str]:
+    def base64_to_json(b64) -> dict[str, Any]:
         decodedbytes = base64.b64decode(b64[1:-1])
         decodedstr = decodedbytes.decode("ascii")
         json_dict = json.loads(decodedstr)
