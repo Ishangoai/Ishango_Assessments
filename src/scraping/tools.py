@@ -1,3 +1,5 @@
+import os
+import base64
 import re
 import requests
 import numpy as np
@@ -5,8 +7,10 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
-from typing import Iterable
+from typing import Iterable, Any
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -50,12 +54,12 @@ def login() -> requests.sessions.Session:
         # (.*?) will match any content. It is still unclear how "?" helps
         search = re.search(r'window\.__pageToken = "(.*?)";', main_site)
         assert search is not None
-        pageToken = search.group(1)
+        pagetoken = search.group(1)
 
         login_payload = {
             'username': C.Payload.username,
             'password': C.Payload.password,
-            'pageToken': pageToken
+            'pageToken': pagetoken
         }
 
         # Post payload to login, retrieve status code
@@ -182,23 +186,21 @@ class DataBaseInteraction:
     table_name (str): name of the table to be created/used in the database
     """
 
-    def __init__(
-        self,
-        dataframe: pd.DataFrame,
-        table_name: str
-                ) -> None:
-
+    def __init__(self) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.dataframe: pd.DataFrame = dataframe
-        self.table_name: str = table_name
-        self.db_engine: sqlalchemy.engine.base.Engine = None
+        self.db_engine: sqlalchemy.engine.base.Engine = None,
+        self.db_type: str = D.DatabaseTypes.POSTGRES
 
-    def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
+    def save_results_to_db(
+        self,
+        dataframe: pd.DataFrame,
+        table_name: str
+            ) -> None:
         """
         Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
@@ -210,7 +212,8 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.db_type = db_type
+        self.dataframe = dataframe
+        self.table_name = table_name
         self.db_connect()
 
         # Save the dataframe into the database
@@ -253,3 +256,52 @@ class DataBaseInteraction:
                     if_exists='replace',
                     index=False
                     )
+
+
+class GoogleSheets(DataBaseInteraction):
+    def __init__(self) -> None:
+        super().__init__()
+
+    @staticmethod
+    def base64_to_json(b64) -> dict[str, str]:
+        decodedbytes: bytes = base64.b64decode(b64[1:-1])
+        decodedstr: str = decodedbytes.decode("ascii")
+        json_dict: dict[str, str] = json.loads(decodedstr)
+        return json_dict
+
+    def read_from_sql(self, table_name: str) -> None:
+        self.db_connect()
+        df: pd.DataFrame = pd.read_sql(table_name, con=self.db_engine)
+        df['date_joined'] = df['date_joined'].dt.strftime('%Y-%m-%d')
+        df['date_link_sent'] = df['date_link_sent'].dt.strftime('%Y-%m-%d')
+        df.replace(np.nan, 'N/A', inplace=True)
+        self.dataframe: pd.DataFrame = df
+
+    def writetosheets(self) -> dict[str, Any]:
+        SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
+        b64: str = os.environ['SHEETS_API_CREDENTIALS_B64']
+        json_dict: dict[str, str] = self.base64_to_json(b64)
+
+        # create service account credentials object
+        creds = service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+
+        # Construct a Resource for interacting with an API
+        service = build('sheets', 'v4', credentials=creds)
+
+        # convert dataframe into list, with first list being column names
+        data: list[list[Any]] = self.dataframe.to_numpy().tolist()
+        column_names: list[str] = self.dataframe.columns.tolist()
+        data.insert(0, column_names)
+
+        # instantiate class to interact with a resource
+        sheet = service.spreadsheets()
+
+        # write to google sheets
+        result: dict[str, Any] = sheet.values().update(
+            spreadsheetId="12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4",
+            range="test!A1",
+            valueInputOption="USER_ENTERED",
+            body={'values': data}
+            ).execute()
+
+        return result

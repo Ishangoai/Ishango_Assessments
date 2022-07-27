@@ -10,7 +10,6 @@ import scraping.tools as T
 def extract_results(
                     pre_process: bool = True,
                     save_to_db: bool = True,
-                    db_type: str = D.DatabaseTypes.SQLITE,
                     save_to_file: bool = True,
                     ) -> None:
     # login into coderbyte and return the session
@@ -29,8 +28,8 @@ def extract_results(
             print("Cannot save to database without pre-processing the results.")
             return
         # save results to database
-        db = T.DataBaseInteraction(results, D.DatabaseTables.TABLE_ghana_2022.value)
-        db.save_results_to_db(db_type)
+        db = T.DataBaseInteraction()
+        db.save_results_to_db(dataframe=results, table_name=D.DatabaseTables.TABLE_ghana_2022.value)
 
     if save_to_file:
         # save the resulting dataframe
@@ -38,4 +37,4 @@ def extract_results(
 
 
 if __name__ == '__main__':
-    extract_results(db_type=D.DatabaseTypes.POSTGRES, save_to_file=False)
+    extract_results(save_to_file=False)
