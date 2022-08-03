@@ -186,7 +186,7 @@ class DataBaseInteraction:
     table_name (str): name of the table to be created/used in the database
     """
 
-    def __init__(self, dataframe: None, table_name: str) -> None:
+    def __init__(self, table_name: str, dataframe: pd.DataFrame=None) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
@@ -194,8 +194,8 @@ class DataBaseInteraction:
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
         self.db_type: str = D.DatabaseTypes.POSTGRES
-        self.dataframe: pd.DataFrame = dataframe
         self.table_name: str = table_name
+        self.dataframe: pd.DataFrame = dataframe
         self.db_engine: sqlalchemy.engine.base.Engine = None
 
     def save_results_to_db(self) -> None:
@@ -255,8 +255,8 @@ class DataBaseInteraction:
 
 
 class GoogleSheets(DataBaseInteraction):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, table_name) -> None:
+        super(GoogleSheets, self).__init__(table_name)
 
     @staticmethod
     def base64_to_json(b64) -> dict[str, str]:
