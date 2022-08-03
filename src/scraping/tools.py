@@ -186,21 +186,19 @@ class DataBaseInteraction:
     table_name (str): name of the table to be created/used in the database
     """
 
-    def __init__(self) -> None:
+    def __init__(self, dataframe: None, table_name: str) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.db_engine: sqlalchemy.engine.base.Engine = None,
         self.db_type: str = D.DatabaseTypes.POSTGRES
+        self.dataframe: pd.DataFrame = dataframe
+        self.table_name: str = table_name
+        self.db_engine: sqlalchemy.engine.base.Engine = None
 
-    def save_results_to_db(
-        self,
-        dataframe: pd.DataFrame,
-        table_name: str
-            ) -> None:
+    def save_results_to_db(self) -> None:
         """
         Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
@@ -212,8 +210,6 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.dataframe = dataframe
-        self.table_name = table_name
         self.db_connect()
 
         # Save the dataframe into the database
