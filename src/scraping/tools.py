@@ -185,7 +185,7 @@ class DataBaseInteraction:
     table_name (str): name of the table to be created/used in the database
     """
 
-    def __init__(self, table_name: str, dataframe: pd.DataFrame=None) -> None:
+    def __init__(self, table_name: str, dataframe: pd.DataFrame = None) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
@@ -209,12 +209,12 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.__db_connect()
+        self.db_connect()
 
         # Save the dataframe into the database
         self.__dataframe_to_db()
 
-    def __db_connect(self) -> None:
+    def _db_connect(self) -> None:
 
         """
         Connects to a database using the parameters provided and
@@ -254,8 +254,8 @@ class DataBaseInteraction:
 
 
 class GoogleSheets(DataBaseInteraction):
-    def __init__(self, table_name) -> None:
-        super(GoogleSheets, self).__init__(table_name)
+    # def __init__(self, table_name) -> None:
+    #     super().__init__(table_name)
 
     @staticmethod
     def base64_to_json(b64) -> dict[str, str]:
@@ -266,7 +266,7 @@ class GoogleSheets(DataBaseInteraction):
         return json_dict
 
     def __read_from_sql(self) -> None:
-        super().__db_connect()
+        super()._db_connect()
         self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
     def __process_data(self):
