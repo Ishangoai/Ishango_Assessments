@@ -1,4 +1,3 @@
-import os
 import base64
 import re
 import requests
@@ -7,8 +6,8 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
-import googleapiclient
-import google
+import googleapiclient.discovery
+import google.oauth2.service_account
 from typing import Iterable, Any
 
 import scraping.credentials as C
@@ -254,9 +253,6 @@ class DataBaseInteraction:
 
 
 class GoogleSheets(DataBaseInteraction):
-    # def __init__(self, table_name) -> None:
-    #     super().__init__(table_name)
-
     @staticmethod
     def base64_to_json(b64) -> dict[str, str]:
         trim_string = slice(1, -1)
