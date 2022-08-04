@@ -7,9 +7,8 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
-
+import googleapiclient
+import google
 from typing import Iterable, Any
 
 import scraping.credentials as C
@@ -210,12 +209,12 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.db_connect()
+        self.__db_connect()
 
         # Save the dataframe into the database
-        self.dataframe_to_db()
+        self.__dataframe_to_db()
 
-    def db_connect(self) -> None:
+    def __db_connect(self) -> None:
 
         """
         Connects to a database using the parameters provided and
@@ -239,7 +238,7 @@ class DataBaseInteraction:
                      )
                  )
 
-    def dataframe_to_db(self) -> None:
+    def __dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
         and saves it into a local database using the Pandas .to_sql method,
@@ -260,44 +259,48 @@ class GoogleSheets(DataBaseInteraction):
 
     @staticmethod
     def base64_to_json(b64) -> dict[str, str]:
-        decodedbytes: bytes = base64.b64decode(b64[1:-1])
+        trim_string = slice(1, -1)
+        decodedbytes: bytes = base64.b64decode(b64[trim_string])
         decodedstr: str = decodedbytes.decode("ascii")
         json_dict: dict[str, str] = json.loads(decodedstr)
         return json_dict
 
-    def read_from_sql(self, table_name: str) -> None:
+    def __read_from_sql(self) -> None:
         self.db_connect()
-        df: pd.DataFrame = pd.read_sql(table_name, con=self.db_engine)
-        df['date_joined'] = df['date_joined'].dt.strftime('%Y-%m-%d')
-        df['date_link_sent'] = df['date_link_sent'].dt.strftime('%Y-%m-%d')
-        df.replace(np.nan, 'N/A', inplace=True)
-        self.dataframe: pd.DataFrame = df
+        self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
-    def writetosheets(self) -> dict[str, Any]:
-        SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
-        b64: str = os.environ['SHEETS_API_CREDENTIALS_B64']
-        json_dict: dict[str, str] = self.base64_to_json(b64)
-
-        # create service account credentials object
-        creds = service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
-
-        # Construct a Resource for interacting with an API
-        service = build('sheets', 'v4', credentials=creds)
+    def __process_data(self):
+        self.coderbyte_df['date_joined'] = self.coderbyte_df['date_joined'].dt.strftime('%Y-%m-%d')
+        self.coderbyte_df['date_link_sent'] = self.coderbyte_df['date_link_sent'].dt.strftime('%Y-%m-%d')
+        self.coderbyte_df.replace(np.nan, 'N/A', inplace=True)
 
         # convert dataframe into list, with first list being column names
-        data: list[list[Any]] = self.dataframe.to_numpy().tolist()
+        self.coderbyte_list: list[list[Any]] = self.coderbyte_df.to_numpy().tolist()
         column_names: list[str] = self.dataframe.columns.tolist()
-        data.insert(0, column_names)
+        self.coderbyte_list.insert(0, column_names)
+
+    def sqltosheets(self) -> dict[str, Any]:
+        self.__read_from_sql()
+        self.__process_data()
+
+        SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
+        json_dict: dict[str, str] = self.base64_to_json(C.GoogleSheets.B64_CREDS)
+
+        # create service account credentials object
+        creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+
+        # Construct a Resource for interacting with an API
+        service = googleapiclient.discovery.build('sheets', 'v4', credentials=creds)
 
         # instantiate class to interact with a resource
         sheet = service.spreadsheets()
 
         # write to google sheets
         result: dict[str, Any] = sheet.values().update(
-            spreadsheetId="12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4",
-            range="test!A1",
+            spreadsheetId=C.GoogleSheets.SPREADSHEET_ID,
+            range=C.GoogleSheets.RANGE,
             valueInputOption="USER_ENTERED",
-            body={'values': data}
+            body={'values': self.coderbyte_list}
             ).execute()
 
         return result

@@ -35,3 +35,9 @@ class Postgres(str, enum.Enum):
 
     USER = os.environ['POSTGRES_USER']
     PASS = os.environ['POSTGRES_PASSWORD']
+
+
+class GoogleSheets(str, enum.Enum):
+    B64_CREDS = os.environ['SHEETS_API_CREDENTIALS_B64']
+    SPREADSHEET_ID = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
+    RANGE = "test!A1"
