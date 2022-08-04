@@ -293,8 +293,8 @@ class GoogleSheets(DataBaseInteraction):
 
         # write to google sheets
         result: dict[str, Any] = sheet.values().update(
-            spreadsheetId=C.GoogleSheets.SPREADSHEET_ID,
-            range=C.GoogleSheets.RANGE,
+            spreadsheetId=C.GoogleSheets.SPREADSHEET_ID.value,
+            range=C.GoogleSheets.RANGE.value,
             valueInputOption="USER_ENTERED",
             body={'values': self.coderbyte_list}
             ).execute()
