@@ -292,11 +292,12 @@ class GoogleSheets(DataBaseInteraction):
         sheet = service.spreadsheets()
 
         # write to google sheets
-        result: dict[str, Any] = sheet.values().update(
+        update_instructions = sheet.values().update(
             spreadsheetId=C.GoogleSheets.SPREADSHEET_ID.value,
             range=C.GoogleSheets.RANGE.value,
             valueInputOption="USER_ENTERED",
             body={'values': self.coderbyte_list}
-            ).execute()
+            )
+        result: dict[str, Any] = update_instructions.execute()
 
         return result
