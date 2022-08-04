@@ -270,7 +270,7 @@ class GoogleSheets(DataBaseInteraction):
         self.coderbyte_df['date_link_sent'] = self.coderbyte_df['date_link_sent'].dt.strftime('%Y-%m-%d')
         self.coderbyte_df.replace(np.nan, 'N/A', inplace=True)
 
-        # convert dataframe into list, with first list being column names
+        # convert dataframe into list of lists, with first list being column names
         self.coderbyte_list: list[list[Any]] = self.coderbyte_df.to_numpy().tolist()
         column_names: list[str] = self.coderbyte_df.columns.tolist()
         self.coderbyte_list.insert(0, column_names)
