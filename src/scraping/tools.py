@@ -276,7 +276,7 @@ class GoogleSheets(DataBaseInteraction):
 
         # convert dataframe into list, with first list being column names
         self.coderbyte_list: list[list[Any]] = self.coderbyte_df.to_numpy().tolist()
-        column_names: list[str] = self.dataframe.columns.tolist()
+        column_names: list[str] = self.coderbyte_df.columns.tolist()
         self.coderbyte_list.insert(0, column_names)
 
     def sqltosheets(self) -> dict[str, Any]:
