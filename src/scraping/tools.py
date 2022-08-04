@@ -209,10 +209,10 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.db_connect()
+        self._db_connect()
 
         # Save the dataframe into the database
-        self.__dataframe_to_db()
+        self._dataframe_to_db()
 
     def _db_connect(self) -> None:
 
@@ -238,7 +238,7 @@ class DataBaseInteraction:
                      )
                  )
 
-    def __dataframe_to_db(self) -> None:
+    def _dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
         and saves it into a local database using the Pandas .to_sql method,
@@ -265,11 +265,11 @@ class GoogleSheets(DataBaseInteraction):
         json_dict: dict[str, str] = json.loads(decodedstr)
         return json_dict
 
-    def __read_from_sql(self) -> None:
+    def _read_from_sql(self) -> None:
         super()._db_connect()
         self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
-    def __process_data(self):
+    def _process_data(self):
         self.coderbyte_df['date_joined'] = self.coderbyte_df['date_joined'].dt.strftime('%Y-%m-%d')
         self.coderbyte_df['date_link_sent'] = self.coderbyte_df['date_link_sent'].dt.strftime('%Y-%m-%d')
         self.coderbyte_df.replace(np.nan, 'N/A', inplace=True)
@@ -280,8 +280,8 @@ class GoogleSheets(DataBaseInteraction):
         self.coderbyte_list.insert(0, column_names)
 
     def sqltosheets(self) -> dict[str, Any]:
-        self.__read_from_sql()
-        self.__process_data()
+        self._read_from_sql()
+        self._process_data()
 
         SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
         json_dict: dict[str, str] = self.base64_to_json(C.GoogleSheets.B64_CREDS)
