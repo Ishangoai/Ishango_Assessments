@@ -266,7 +266,7 @@ class GoogleSheets(DataBaseInteraction):
         return json_dict
 
     def __read_from_sql(self) -> None:
-        self.__db_connect()
+        super().__db_connect()
         self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
     def __process_data(self):

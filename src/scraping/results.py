@@ -11,6 +11,7 @@ def extract_results(
                     pre_process: bool = True,
                     save_to_db: bool = True,
                     save_to_file: bool = True,
+                    write_to_gsheets: bool = True,
                     ) -> None:
     # login into coderbyte and return the session
     session = T.login()
@@ -34,6 +35,10 @@ def extract_results(
     if save_to_file:
         # save the resulting dataframe
         T.save_results(results, D.Paths.ghana_2022_export_path)
+
+    if write_to_gsheets:
+        gs = T.GoogleSheets(table_name=D.DatabaseTables.TABLE_ghana_2022.value)
+        gs.sqltosheets()
 
 
 if __name__ == '__main__':
