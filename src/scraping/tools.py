@@ -208,12 +208,12 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self._db_connect()
+        self.__db_connect()
 
         # Save the dataframe into the database
         self._dataframe_to_db()
 
-    def _db_connect(self) -> None:
+    def __db_connect(self) -> None:
 
         """
         Connects to a database using the parameters provided and
@@ -253,8 +253,25 @@ class DataBaseInteraction:
 
 
 class GoogleSheets(DataBaseInteraction):
+    """
+    Object reads from SQL (using inherited method db_connect); 
+    processes data in a format compatible with Google Sheets;
+    and writes to Google Sheets.
+    """
     @staticmethod
-    def base64_to_json(b64) -> dict[str, str]:
+    def base64_to_json(b64: str) -> dict[str, str]:
+        """
+        Decodes base64 string into JSON credentials dictionary
+
+        Args:
+        b64 (str]: base64 encoded string of credentials
+        originally in JSON format. encoding is done in 
+        order to be able to store in Github Secrets (JSON does
+        not pass as an environment variable in Github Actions).
+
+        Returns:
+        dictionary of credentials in JSON format
+        """
         trim_string = slice(1, -1)
         decodedbytes: bytes = base64.b64decode(b64[trim_string])
         decodedstr: str = decodedbytes.decode("ascii")
@@ -262,10 +279,18 @@ class GoogleSheets(DataBaseInteraction):
         return json_dict
 
     def _read_from_sql(self) -> None:
-        super()._db_connect()
+        """
+        reads table from SQL and stores as dataframe in object state
+        """
+        super()._DataBaseInteraction__db_connect()
         self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
     def _process_data(self):
+        """
+        convert non-string values (datetime64[ns], np.NaN) into 
+        string format inorder to be compatible with Google Sheets
+
+        """
         self.coderbyte_df['date_joined'] = self.coderbyte_df['date_joined'].dt.strftime('%Y-%m-%d')
         self.coderbyte_df['date_link_sent'] = self.coderbyte_df['date_link_sent'].dt.strftime('%Y-%m-%d')
         self.coderbyte_df.replace(np.nan, 'N/A', inplace=True)
@@ -276,6 +301,9 @@ class GoogleSheets(DataBaseInteraction):
         self.coderbyte_list.insert(0, column_names)
 
     def sqltosheets(self) -> dict[str, Any]:
+        """
+        public method to read, process, and write to Google Sheets.
+        """
         self._read_from_sql()
         self._process_data()
 
