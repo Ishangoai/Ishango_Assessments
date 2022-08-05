@@ -58,7 +58,7 @@ jobs:
         POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASS }}
 
-    # - name: Type Hinting with mypy
-    #   run: |
-    #     pip install mypy
-    #     mypy .
+    - name: Type Hinting with mypy
+      run: |
+        pip install mypy
+        mypy .
