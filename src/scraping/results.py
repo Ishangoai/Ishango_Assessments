@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-'''
+"""
 This script logs into the coderbyte website, scrapes coding results, and saves them to DB or a .csv file.
 Because the coderbyte API costs $200/month, this script can save Ishango costs.
-'''
+"""
 import scraping.definitions as D
 import scraping.tools as T
 
 
 def extract_results(
-                    pre_process: bool = True,
-                    save_to_db: bool = True,
-                    save_to_file: bool = True,
-                    write_to_gsheets: bool = True,
-                    ) -> None:
+    pre_process: bool = True,
+    save_to_db: bool = True,
+    save_to_file: bool = True,
+    write_to_gsheets: bool = True,
+) -> None:
     # login into coderbyte and return the session
     session = T.login()
 
@@ -41,5 +41,5 @@ def extract_results(
         gs.sqltosheets()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     extract_results(save_to_file=False)
