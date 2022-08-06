@@ -1,3 +1,4 @@
+import base64
 import re
 import requests
 import numpy as np
@@ -5,8 +6,9 @@ import pandas as pd
 import json
 import functools
 import sqlalchemy
-
-from typing import Iterable
+import googleapiclient.discovery
+import google.oauth2.service_account
+from typing import Iterable, Any
 
 import scraping.credentials as C
 import scraping.definitions as D
@@ -50,12 +52,12 @@ def login() -> requests.sessions.Session:
         # (.*?) will match any content. It is still unclear how "?" helps
         search = re.search(r'window\.__pageToken = "(.*?)";', main_site)
         assert search is not None
-        pageToken = search.group(1)
+        pagetoken = search.group(1)
 
         login_payload = {
             'username': C.Payload.username,
             'password': C.Payload.password,
-            'pageToken': pageToken
+            'pageToken': pagetoken
         }
 
         # Post payload to login, retrieve status code
@@ -182,23 +184,19 @@ class DataBaseInteraction:
     table_name (str): name of the table to be created/used in the database
     """
 
-    def __init__(
-        self,
-        dataframe: pd.DataFrame,
-        table_name: str
-                ) -> None:
-
+    def __init__(self, table_name: str, dataframe: pd.DataFrame = None) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
         self.user: str = C.Postgres.USER
         self.password: str = C.Postgres.PASS
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.dataframe: pd.DataFrame = dataframe
+        self.db_type: str = D.DatabaseTypes.POSTGRES
         self.table_name: str = table_name
+        self.dataframe: pd.DataFrame = dataframe
         self.db_engine: sqlalchemy.engine.base.Engine = None
 
-    def save_results_to_db(self, db_type: str = D.DatabaseTypes.SQLITE) -> None:
+    def save_results_to_db(self) -> None:
         """
         Calls two auxiliary methods to connect and then convert the pandas
         dataframe to SQL
@@ -210,13 +208,12 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.db_type = db_type
-        self.db_connect()
+        self._db_connect()
 
         # Save the dataframe into the database
-        self.dataframe_to_db()
+        self._dataframe_to_db()
 
-    def db_connect(self) -> None:
+    def _db_connect(self) -> None:
 
         """
         Connects to a database using the parameters provided and
@@ -240,7 +237,7 @@ class DataBaseInteraction:
                      )
                  )
 
-    def dataframe_to_db(self) -> None:
+    def _dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
         and saves it into a local database using the Pandas .to_sql method,
@@ -253,3 +250,82 @@ class DataBaseInteraction:
                     if_exists='replace',
                     index=False
                     )
+
+
+class GoogleSheets(DataBaseInteraction):
+    """
+    Object reads from SQL (using inherited method db_connect); 
+    processes data in a format compatible with Google Sheets;
+    and writes to Google Sheets.
+    """
+    @staticmethod
+    def base64_to_json(b64: str) -> dict[str, str]:
+        """
+        Decodes base64 string into JSON credentials dictionary
+
+        Args:
+        b64 (str]: base64 encoded string of credentials
+        originally in JSON format. encoding is done in 
+        order to be able to store in Github Secrets (JSON does
+        not pass as an environment variable in Github Actions).
+
+        Returns:
+        dictionary of credentials in JSON format
+        """
+        trim_string = slice(1, -1)
+        decodedbytes: bytes = base64.b64decode(b64[trim_string])
+        decodedstr: str = decodedbytes.decode("ascii")
+        json_dict: dict[str, str] = json.loads(decodedstr)
+        return json_dict
+
+    def _read_from_sql(self) -> None:
+        """
+        reads table from SQL and stores as dataframe in object state
+        """
+        super()._db_connect()
+        self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
+
+    def _process_data(self):
+        """
+        convert non-string values (datetime64[ns], np.NaN) into 
+        string format inorder to be compatible with Google Sheets
+
+        """
+        self.coderbyte_df['date_joined'] = self.coderbyte_df['date_joined'].dt.strftime('%Y-%m-%d')
+        self.coderbyte_df['date_link_sent'] = self.coderbyte_df['date_link_sent'].dt.strftime('%Y-%m-%d')
+        self.coderbyte_df.replace(np.nan, 'N/A', inplace=True)
+
+        # convert dataframe into list of lists, with first list being column names
+        self.coderbyte_list: list[list[Any]] = self.coderbyte_df.to_numpy().tolist()
+        column_names: list[str] = self.coderbyte_df.columns.tolist()
+        self.coderbyte_list.insert(0, column_names)
+
+    def sqltosheets(self) -> dict[str, Any]:
+        """
+        public method to read, process, and write to Google Sheets.
+        """
+        self._read_from_sql()
+        self._process_data()
+
+        SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
+        json_dict: dict[str, str] = self.base64_to_json(C.GoogleSheets.B64_CREDS)
+
+        # create service account credentials object
+        creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+
+        # Construct a Resource for interacting with an API
+        service = googleapiclient.discovery.build('sheets', 'v4', credentials=creds)
+
+        # instantiate class to interact with a resource
+        sheet = service.spreadsheets()
+
+        # write to google sheets
+        update_instructions = sheet.values().update(
+            spreadsheetId=C.GoogleSheets.SPREADSHEET_ID.value,
+            range=C.GoogleSheets.RANGE.value,
+            valueInputOption="USER_ENTERED",
+            body={'values': self.coderbyte_list}
+            )
+        result: dict[str, Any] = update_instructions.execute()
+
+        return result
