@@ -68,9 +68,7 @@ def login() -> requests.sessions.Session:
         return session
 
 
-def retrieve_and_union_results(
-    assessments: Iterable[str], session: requests.sessions.Session
-) -> pd.DataFrame:
+def retrieve_and_union_results(assessments: Iterable[str], session: requests.sessions.Session) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -103,23 +101,17 @@ def retrieve_and_union_results(
 
         # add url to coding report
         as_id = ":" + assessment.split(":")[1]
-        results["report_url"] = (
-            D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
-        )
+        results["report_url"] = D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
 
         results_list.append(results)
 
     # Union the results of all assessments
-    results_union = functools.reduce(
-        lambda top, bottom: pd.concat([top, bottom]), results_list
-    )
+    results_union = functools.reduce(lambda top, bottom: pd.concat([top, bottom]), results_list)
 
     return results_union
 
 
-def pre_process_results(
-    dataframe: pd.DataFrame, col_types: dict[str, str]
-) -> pd.DataFrame:
+def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
@@ -144,12 +136,8 @@ def pre_process_results(
     dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
 
     # Convert datetimes to datetime64
-    dataframe["date_joined"] = pd.to_datetime(
-        dataframe["date_joined"], format="%m/%d/%y"
-    )
-    dataframe["date_link_sent"] = pd.to_datetime(
-        dataframe["date_link_sent"], format="%m/%d/%y, %I:%M%p"
-    )
+    dataframe["date_joined"] = pd.to_datetime(dataframe["date_joined"], format="%m/%d/%y")
+    dataframe["date_link_sent"] = pd.to_datetime(dataframe["date_link_sent"], format="%m/%d/%y, %I:%M%p")
 
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
@@ -227,9 +215,7 @@ class DataBaseInteraction:
         """
 
         if self.db_type == D.DatabaseTypes.SQLITE:
-            self.db_engine = sqlalchemy.create_engine(
-                f"{self.db_type}:///" + self.db_path
-            )
+            self.db_engine = sqlalchemy.create_engine(f"{self.db_type}:///" + self.db_path)
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             self.db_engine = sqlalchemy.create_engine(
@@ -250,9 +236,7 @@ class DataBaseInteraction:
         passing in table_name and db_engine
         """
 
-        self.dataframe.to_sql(
-            name=self.table_name, con=self.db_engine, if_exists="replace", index=False
-        )
+        self.dataframe.to_sql(name=self.table_name, con=self.db_engine, if_exists="replace", index=False)
 
 
 class GoogleSheets(DataBaseInteraction):
@@ -287,9 +271,7 @@ class GoogleSheets(DataBaseInteraction):
         reads table from SQL and stores as dataframe in object state
         """
         super()._db_connect()
-        self.coderbyte_df: pd.DataFrame = pd.read_sql(
-            self.table_name, con=self.db_engine
-        )
+        self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
     def _process_data(self):
         """
@@ -297,12 +279,8 @@ class GoogleSheets(DataBaseInteraction):
         string format inorder to be compatible with Google Sheets
 
         """
-        self.coderbyte_df["date_joined"] = self.coderbyte_df["date_joined"].dt.strftime(
-            "%Y-%m-%d"
-        )
-        self.coderbyte_df["date_link_sent"] = self.coderbyte_df[
-            "date_link_sent"
-        ].dt.strftime("%Y-%m-%d")
+        self.coderbyte_df["date_joined"] = self.coderbyte_df["date_joined"].dt.strftime("%Y-%m-%d")
+        self.coderbyte_df["date_link_sent"] = self.coderbyte_df["date_link_sent"].dt.strftime("%Y-%m-%d")
         self.coderbyte_df.replace(np.nan, "N/A", inplace=True)
 
         # convert dataframe into list of lists, with first list being column names
@@ -321,9 +299,7 @@ class GoogleSheets(DataBaseInteraction):
         json_dict: dict[str, str] = self.base64_to_json(C.GoogleSheets.B64_CREDS)
 
         # create service account credentials object
-        creds = google.oauth2.service_account.Credentials.from_service_account_info(
-            json_dict, scopes=SCOPES
-        )
+        creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
 
         # Construct a Resource for interacting with an API
         service = googleapiclient.discovery.build("sheets", "v4", credentials=creds)
