@@ -55,22 +55,22 @@ def login() -> requests.sessions.Session:
         pagetoken = search.group(1)
 
         login_payload = {
-            'username': C.Payload.username,
-            'password': C.Payload.password,
-            'pageToken': pagetoken
+            "username": C.Payload.username,
+            "password": C.Payload.password,
+            "pageToken": pagetoken,
         }
 
         # Post payload to login, retrieve status code
-        session.post(
-            D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE, data=login_payload
-        )
+        session.post(D.Paths.URL + D.Paths.BACKEND_LOGIN_PAGE, data=login_payload)
 
         # returns the requests.session object unless in debug mode,
         # where it returns the session's status code
         return session
 
 
-def retrieve_and_union_results(assessments: Iterable[str], session: requests.sessions.Session) -> pd.DataFrame:
+def retrieve_and_union_results(
+    assessments: Iterable[str], session: requests.sessions.Session
+) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -102,8 +102,10 @@ def retrieve_and_union_results(assessments: Iterable[str], session: requests.ses
         results = pd.json_normalize(results)
 
         # add url to coding report
-        as_id = ':' + assessment.split(':')[1]
-        results['report_url'] = D.Paths.URL + D.Paths.REPORT + results['username'] + as_id
+        as_id = ":" + assessment.split(":")[1]
+        results["report_url"] = (
+            D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
+        )
 
         results_list.append(results)
 
@@ -115,7 +117,9 @@ def retrieve_and_union_results(assessments: Iterable[str], session: requests.ses
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
+def pre_process_results(
+    dataframe: pd.DataFrame, col_types: dict[str, str]
+) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
@@ -136,16 +140,16 @@ def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> p
     """
 
     # Correct N/A and empty [] values
-    dataframe.replace(['N/A'], np.nan, regex=True, inplace=True)
-    dataframe['mc_answers'] = dataframe['mc_answers'].str.strip('[]').astype(object)
+    dataframe.replace(["N/A"], np.nan, regex=True, inplace=True)
+    dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
 
     # Convert datetimes to datetime64
-    dataframe['date_joined'] = pd.to_datetime(
-        dataframe['date_joined'], format='%m/%d/%y'
-        )
-    dataframe['date_link_sent'] = pd.to_datetime(
-        dataframe['date_link_sent'], format="%m/%d/%y, %I:%M%p"
-        )
+    dataframe["date_joined"] = pd.to_datetime(
+        dataframe["date_joined"], format="%m/%d/%y"
+    )
+    dataframe["date_link_sent"] = pd.to_datetime(
+        dataframe["date_link_sent"], format="%m/%d/%y, %I:%M%p"
+    )
 
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
@@ -171,6 +175,7 @@ def save_results(dataframe: pd.DataFrame, path: str) -> None:
 #             DB INTERACTION TOOLS              #
 #                                               #
 #################################################
+
 
 class DataBaseInteraction:
     """
@@ -222,20 +227,21 @@ class DataBaseInteraction:
         """
 
         if self.db_type == D.DatabaseTypes.SQLITE:
-            self.db_engine = sqlalchemy.create_engine(f'{self.db_type}:///' + self.db_path)
+            self.db_engine = sqlalchemy.create_engine(
+                f"{self.db_type}:///" + self.db_path
+            )
 
         elif self.db_type == D.DatabaseTypes.POSTGRES:
             self.db_engine = sqlalchemy.create_engine(
-                 '{}://{}:{}@{}:{}/{}'
-                 .format(
-                     self.db_type,
-                     self.user,
-                     self.password,
-                     self.host,
-                     self.port,
-                     self.db_name
-                     )
-                 )
+                "{}://{}:{}@{}:{}/{}".format(
+                    self.db_type,
+                    self.user,
+                    self.password,
+                    self.host,
+                    self.port,
+                    self.db_name,
+                )
+            )
 
     def _dataframe_to_db(self) -> None:
         """
@@ -245,19 +251,17 @@ class DataBaseInteraction:
         """
 
         self.dataframe.to_sql(
-                    name=self.table_name,
-                    con=self.db_engine,
-                    if_exists='replace',
-                    index=False
-                    )
+            name=self.table_name, con=self.db_engine, if_exists="replace", index=False
+        )
 
 
 class GoogleSheets(DataBaseInteraction):
     """
-    Object reads from SQL (using inherited method db_connect); 
+    Object reads from SQL (using inherited method db_connect);
     processes data in a format compatible with Google Sheets;
     and writes to Google Sheets.
     """
+
     @staticmethod
     def base64_to_json(b64: str) -> dict[str, str]:
         """
@@ -265,7 +269,7 @@ class GoogleSheets(DataBaseInteraction):
 
         Args:
         b64 (str]: base64 encoded string of credentials
-        originally in JSON format. encoding is done in 
+        originally in JSON format. encoding is done in
         order to be able to store in Github Secrets (JSON does
         not pass as an environment variable in Github Actions).
 
@@ -283,17 +287,23 @@ class GoogleSheets(DataBaseInteraction):
         reads table from SQL and stores as dataframe in object state
         """
         super()._db_connect()
-        self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
+        self.coderbyte_df: pd.DataFrame = pd.read_sql(
+            self.table_name, con=self.db_engine
+        )
 
     def _process_data(self):
         """
-        convert non-string values (datetime64[ns], np.NaN) into 
+        convert non-string values (datetime64[ns], np.NaN) into
         string format inorder to be compatible with Google Sheets
 
         """
-        self.coderbyte_df['date_joined'] = self.coderbyte_df['date_joined'].dt.strftime('%Y-%m-%d')
-        self.coderbyte_df['date_link_sent'] = self.coderbyte_df['date_link_sent'].dt.strftime('%Y-%m-%d')
-        self.coderbyte_df.replace(np.nan, 'N/A', inplace=True)
+        self.coderbyte_df["date_joined"] = self.coderbyte_df["date_joined"].dt.strftime(
+            "%Y-%m-%d"
+        )
+        self.coderbyte_df["date_link_sent"] = self.coderbyte_df[
+            "date_link_sent"
+        ].dt.strftime("%Y-%m-%d")
+        self.coderbyte_df.replace(np.nan, "N/A", inplace=True)
 
         # convert dataframe into list of lists, with first list being column names
         self.coderbyte_list: list[list[Any]] = self.coderbyte_df.to_numpy().tolist()
@@ -307,14 +317,16 @@ class GoogleSheets(DataBaseInteraction):
         self._read_from_sql()
         self._process_data()
 
-        SCOPES: list[str] = ['https://www.googleapis.com/auth/spreadsheets']
+        SCOPES: list[str] = ["https://www.googleapis.com/auth/spreadsheets"]
         json_dict: dict[str, str] = self.base64_to_json(C.GoogleSheets.B64_CREDS)
 
         # create service account credentials object
-        creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+        creds = google.oauth2.service_account.Credentials.from_service_account_info(
+            json_dict, scopes=SCOPES
+        )
 
         # Construct a Resource for interacting with an API
-        service = googleapiclient.discovery.build('sheets', 'v4', credentials=creds)
+        service = googleapiclient.discovery.build("sheets", "v4", credentials=creds)
 
         # instantiate class to interact with a resource
         sheet = service.spreadsheets()
@@ -324,8 +336,8 @@ class GoogleSheets(DataBaseInteraction):
             spreadsheetId=C.GoogleSheets.SPREADSHEET_ID.value,
             range=C.GoogleSheets.RANGE.value,
             valueInputOption="USER_ENTERED",
-            body={'values': self.coderbyte_list}
-            )
+            body={"values": self.coderbyte_list},
+        )
         result: dict[str, Any] = update_instructions.execute()
 
         return result

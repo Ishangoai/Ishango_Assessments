@@ -10,18 +10,18 @@ class Paths(str, enum.Enum):
     filenames and the path to read/store any files
     """
 
-    URL = 'https://coderbyte.com/'
-    LOGIN_PAGE = 'sl'
-    BACKEND_LOGIN_PAGE = 'backend/requests/sl/login.php'
-    REPORT = 'report/'
+    URL = "https://coderbyte.com/"
+    LOGIN_PAGE = "sl"
+    BACKEND_LOGIN_PAGE = "backend/requests/sl/login.php"
+    REPORT = "report/"
 
     # path where the file will be saved (if other than the
     # current folder)
-    destination_folder = ''
+    destination_folder = ""
 
     # Individual programs filename and paths
-    ghana_2022_export_file = '2022_ghana_assessment_results.csv'
-    ghana_2022_export_path = ''.join([destination_folder, ghana_2022_export_file])
+    ghana_2022_export_file = "2022_ghana_assessment_results.csv"
+    ghana_2022_export_path = "".join([destination_folder, ghana_2022_export_file])
 
 
 class Assessments(tuple[str], enum.Enum):
@@ -30,9 +30,9 @@ class Assessments(tuple[str], enum.Enum):
     """
 
     ghana_2022_assessments = (
-        'dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz',
-        'dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6',
-        'dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3'
+        "dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz",
+        "dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6",
+        "dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3",
     )
 
 
@@ -42,25 +42,25 @@ class PandasSchemas(enum.Enum):
     """
 
     ghana_2022_schema = {
-        'username':                 'object',
-        'email':                    'object',
-        'name':                     'object',
-        'challenges_completed':     'Int64',
-        'mc_score':                 'Int64',
-        'code_score':               'Int64',
-        'final_score':              'Int64',
-        'mc_answers':               'object',
-        'total_points':             'Int64',
-        'final_grade':              'object',
-        'time_taken':               'Int64',
-        'cheated':                  'object',
-        'status':                   'object',
-        'action':                   'object',
-        'compensation':             'object',
-        'video_response_uploaded':  'bool',
-        'date_joined':              'datetime64[ns]',
-        'date_link_sent':           'datetime64[ns]',
-        'report_url':               'object',
+        "username": "object",
+        "email": "object",
+        "name": "object",
+        "challenges_completed": "Int64",
+        "mc_score": "Int64",
+        "code_score": "Int64",
+        "final_score": "Int64",
+        "mc_answers": "object",
+        "total_points": "Int64",
+        "final_grade": "object",
+        "time_taken": "Int64",
+        "cheated": "object",
+        "status": "object",
+        "action": "object",
+        "compensation": "object",
+        "video_response_uploaded": "bool",
+        "date_joined": "datetime64[ns]",
+        "date_link_sent": "datetime64[ns]",
+        "report_url": "object",
     }
 
 
@@ -70,13 +70,13 @@ class DatabaseConnection(str, enum.Enum):
     """
 
     # SQLite Database connection
-    DB_PATH = 'general_docs/Ishango_Coderbyte_DB.db'
+    DB_PATH = "general_docs/Ishango_Coderbyte_DB.db"
 
     # Docker Postgres Database connection
-    LOCALHOST = 'localhost'
-    HOST = os.environ['POSTGRES_HOST']
-    PORT = os.environ['POSTGRES_PORT']
-    DB_NAME = os.environ['POSTGRES_DB']
+    LOCALHOST = "localhost"
+    HOST = os.environ["POSTGRES_HOST"]
+    PORT = os.environ["POSTGRES_PORT"]
+    DB_NAME = os.environ["POSTGRES_DB"]
 
 
 class DatabaseTypes(str, enum.Enum):
@@ -85,8 +85,8 @@ class DatabaseTypes(str, enum.Enum):
     """
 
     # Possible database types:
-    SQLITE = 'sqlite'
-    POSTGRES = 'postgresql'
+    SQLITE = "sqlite"
+    POSTGRES = "postgresql"
 
 
 class DatabaseTables(str, enum.Enum):
@@ -95,5 +95,4 @@ class DatabaseTables(str, enum.Enum):
     """
 
     # Table(s) to be accessed/created
-    TABLE_ghana_2022 = 'ghana2022'
-    
+    TABLE_ghana_2022 = "ghana2022"
