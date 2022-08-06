@@ -10,18 +10,18 @@ import scraping.tools as T
 def extract_results(
                     pre_process: bool = True,
                     save_to_db: bool = True,
-                    db_type: str = D.DatabaseTypes.SQLITE,
                     save_to_file: bool = True,
+                    write_to_gsheets: bool = True,
                     ) -> None:
     # login into coderbyte and return the session
     session = T.login()
 
     # retrieve results for a list of assessments
-    results = T.retrieve_and_union_results(D.Assessments.ghana_2022_assessments, session)
+    results = T.retrieve_and_union_results(assessments=D.Assessments.ghana_2022_assessments, session=session)
 
     if pre_process:
         # pre_process results to be inserted into the database
-        results = T.pre_process_results(results, D.PandasSchemas.ghana_2022_schema.value)
+        results = T.pre_process_results(dataframe=results, col_types=D.PandasSchemas.ghana_2022_schema.value)
 
     if save_to_db:
         # verify that pre-processing is done before saving to the database
@@ -29,13 +29,17 @@ def extract_results(
             print("Cannot save to database without pre-processing the results.")
             return
         # save results to database
-        db = T.DataBaseInteraction(results, D.DatabaseTables.TABLE_ghana_2022.value)
-        db.save_results_to_db(db_type)
+        db = T.DataBaseInteraction(dataframe=results, table_name=D.DatabaseTables.TABLE_ghana_2022.value)
+        db.save_results_to_db()
 
     if save_to_file:
         # save the resulting dataframe
-        T.save_results(results, D.Paths.ghana_2022_export_path)
+        T.save_results(dataframe=results, path=D.Paths.ghana_2022_export_path)
+
+    if write_to_gsheets:
+        gs = T.GoogleSheets(table_name=D.DatabaseTables.TABLE_ghana_2022.value)
+        gs.sqltosheets()
 
 
 if __name__ == '__main__':
-    extract_results(db_type=D.DatabaseTypes.POSTGRES, save_to_file=False)
+    extract_results(save_to_file=False)

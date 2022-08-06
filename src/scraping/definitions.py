@@ -96,3 +96,4 @@ class DatabaseTables(str, enum.Enum):
 
     # Table(s) to be accessed/created
     TABLE_ghana_2022 = 'ghana2022'
+    
