@@ -208,12 +208,12 @@ class DataBaseInteraction:
         """
 
         # Create a connection engine
-        self.__db_connect()
+        self._db_connect()
 
         # Save the dataframe into the database
         self._dataframe_to_db()
 
-    def __db_connect(self) -> None:
+    def _db_connect(self) -> None:
 
         """
         Connects to a database using the parameters provided and
@@ -282,7 +282,7 @@ class GoogleSheets(DataBaseInteraction):
         """
         reads table from SQL and stores as dataframe in object state
         """
-        super()._DataBaseInteraction__db_connect()
+        super()._db_connect()
         self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
 
     def _process_data(self):
