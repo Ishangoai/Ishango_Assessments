@@ -10,7 +10,6 @@ import googleapiclient.discovery
 import google.oauth2.service_account
 from typing import Iterable, Any
 
-import scraping.credentials as C
 import scraping.definitions as D
 
 """
@@ -55,8 +54,8 @@ def login() -> requests.sessions.Session:
         pagetoken = search.group(1)
 
         login_payload = {
-            "username": C.Payload.username,
-            "password": C.Payload.password,
+            "username": D.Payload.username,
+            "password": D.Payload.password,
             "pageToken": pagetoken,
         }
 
@@ -180,8 +179,8 @@ class DataBaseInteraction:
     def __init__(self, table_name: str, dataframe: pd.DataFrame = None) -> None:
         self.db_path: str = D.DatabaseConnection.DB_PATH
         self.host: str = D.DatabaseConnection.HOST
-        self.user: str = C.Postgres.USER
-        self.password: str = C.Postgres.PASS
+        self.user: str = D.DatabaseConnection.USER
+        self.password: str = D.DatabaseConnection.PASS
         self.port: str = D.DatabaseConnection.PORT
         self.db_name: str = D.DatabaseConnection.DB_NAME
         self.db_type: str = D.DatabaseTypes.POSTGRES
@@ -296,7 +295,7 @@ class GoogleSheets(DataBaseInteraction):
         self._process_data()
 
         SCOPES: list[str] = ["https://www.googleapis.com/auth/spreadsheets"]
-        json_dict: dict[str, str] = self.base64_to_json(C.GoogleSheets.B64_CREDS)
+        json_dict: dict[str, str] = self.base64_to_json(D.GoogleSheets.B64_CREDS)
 
         # create service account credentials object
         creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
@@ -309,8 +308,8 @@ class GoogleSheets(DataBaseInteraction):
 
         # write to google sheets
         update_instructions = sheet.values().update(
-            spreadsheetId=C.GoogleSheets.SPREADSHEET_ID.value,
-            range=C.GoogleSheets.RANGE.value,
+            spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value,
+            range=D.GoogleSheets.RANGE.value,
             valueInputOption="USER_ENTERED",
             body={"values": self.coderbyte_list},
         )

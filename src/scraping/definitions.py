@@ -3,6 +3,19 @@ import enum
 
 # Constants and strings should be stored in this file
 
+"""
+To store the credentials (github secrets) locally,
+edit your .zshenv file or .bash_profile file,
+so it can export them
+
+# Adding the coderbyte Ishango credentials as local env var
+export ISHANGO_USER=<username>
+export ISHANGO_PASS=<password>
+
+(Please replace the <username> and <password> with the credentials
+given to you by the Team Lead, when editing your file)
+"""
+
 
 class Paths(str, enum.Enum):
     """
@@ -22,6 +35,15 @@ class Paths(str, enum.Enum):
     # Individual programs filename and paths
     ghana_2022_export_file = "2022_ghana_assessment_results.csv"
     ghana_2022_export_path = "".join([destination_folder, ghana_2022_export_file])
+
+
+class Payload(str, enum.Enum):
+    """
+    Placeholder for the login credentials
+    """
+
+    username = os.environ["ISHANGO_USER"]
+    password = os.environ["ISHANGO_PASS"]
 
 
 class Assessments(tuple[str], enum.Enum):
@@ -77,6 +99,8 @@ class DatabaseConnection(str, enum.Enum):
     HOST = os.environ["POSTGRES_HOST"]
     PORT = os.environ["POSTGRES_PORT"]
     DB_NAME = os.environ["POSTGRES_DB"]
+    USER = os.environ["POSTGRES_USER"]
+    PASS = os.environ["POSTGRES_PASSWORD"]
 
 
 class DatabaseTypes(str, enum.Enum):
@@ -96,3 +120,9 @@ class DatabaseTables(str, enum.Enum):
 
     # Table(s) to be accessed/created
     TABLE_ghana_2022 = "ghana2022"
+
+
+class GoogleSheets(str, enum.Enum):
+    B64_CREDS = os.environ["SHEETS_API_CREDENTIALS_B64"]
+    SPREADSHEET_ID = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
+    RANGE = "test!A1"
