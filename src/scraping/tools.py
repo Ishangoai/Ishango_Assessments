@@ -186,7 +186,7 @@ class DataBaseInteraction:
         self.__db_type: str = D.DatabaseTypes.POSTGRES
         self._table_name: str = table_name
         self.__dataframe: pd.DataFrame = dataframe
-        self.__db_engine: sqlalchemy.engine.base.Engine = None
+        self._db_engine: sqlalchemy.engine.base.Engine = None
 
     def save_results_to_db(self) -> None:
         """
@@ -235,7 +235,7 @@ class DataBaseInteraction:
         passing in table_name and db_engine
         """
 
-        self.__dataframe.to_sql(name=self._table_name, con=self.__db_engine, if_exists="replace", index=False)
+        self.__dataframe.to_sql(name=self._table_name, con=self._db_engine, if_exists="replace", index=False)
 
 
 class GoogleSheets(DataBaseInteraction):
