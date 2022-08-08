@@ -57,6 +57,7 @@ jobs:
         POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASS }}
+        SHEETS_API_CREDENTIALS_B64: ${{ secrets.SHEETS_API_CREDENTIALS_B64 }}
 
     - name: Type Hinting with mypy
       run: |
