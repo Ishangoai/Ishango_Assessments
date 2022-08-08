@@ -214,10 +214,10 @@ class DataBaseInteraction:
         """
 
         if self.__db_type == D.DatabaseTypes.SQLITE:
-            self.__db_engine = sqlalchemy.create_engine(f"{self.__db_type}:///" + self.__db_path)
+            self._db_engine = sqlalchemy.create_engine(f"{self.__db_type}:///" + self.__db_path)
 
         elif self.__db_type == D.DatabaseTypes.POSTGRES:
-            self.__db_engine = sqlalchemy.create_engine(
+            self._db_engine = sqlalchemy.create_engine(
                 "{}://{}:{}@{}:{}/{}".format(
                     self.__db_type,
                     self.__user,
@@ -270,7 +270,7 @@ class GoogleSheets(DataBaseInteraction):
         reads table from SQL and stores as dataframe in object state
         """
         super()._db_connect()
-        self.__coderbyte_df: pd.DataFrame = pd.read_sql(self._table_name, con=self.__db_engine)
+        self.__coderbyte_df: pd.DataFrame = pd.read_sql(self._table_name, con=self._db_engine)
 
     def __process_data(self):
         """
