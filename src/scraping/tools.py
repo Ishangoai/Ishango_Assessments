@@ -184,7 +184,7 @@ class DataBaseInteraction:
         self.__port: str = D.DatabaseConnection.PORT
         self.__db_name: str = D.DatabaseConnection.DB_NAME
         self.__db_type: str = D.DatabaseTypes.POSTGRES
-        self.__table_name: str = table_name
+        self._table_name: str = table_name
         self.__dataframe: pd.DataFrame = dataframe
         self.__db_engine: sqlalchemy.engine.base.Engine = None
 
@@ -235,7 +235,7 @@ class DataBaseInteraction:
         passing in table_name and db_engine
         """
 
-        self.__dataframe.to_sql(name=self.__table_name, con=self.__db_engine, if_exists="replace", index=False)
+        self.__dataframe.to_sql(name=self._table_name, con=self.__db_engine, if_exists="replace", index=False)
 
 
 class GoogleSheets(DataBaseInteraction):
@@ -270,7 +270,7 @@ class GoogleSheets(DataBaseInteraction):
         reads table from SQL and stores as dataframe in object state
         """
         super()._db_connect()
-        self.__coderbyte_df: pd.DataFrame = pd.read_sql(self.__table_name, con=self.__db_engine)
+        self.__coderbyte_df: pd.DataFrame = pd.read_sql(self._table_name, con=self.__db_engine)
 
     def __process_data(self):
         """
