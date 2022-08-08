@@ -246,7 +246,7 @@ class GoogleSheets(DataBaseInteraction):
     """
 
     @staticmethod
-    def base64_to_json(b64: str) -> dict[str, str]:
+    def __base64_to_json(b64: str) -> dict[str, str]:
         """
         Decodes base64 string into JSON credentials dictionary
 
@@ -295,7 +295,7 @@ class GoogleSheets(DataBaseInteraction):
         self.__process_data()
 
         SCOPES: list[str] = ["https://www.googleapis.com/auth/spreadsheets"]
-        json_dict: dict[str, str] = self.base64_to_json(D.GoogleSheets.B64_CREDS)
+        json_dict: dict[str, str] = self.__base64_to_json(D.GoogleSheets.B64_CREDS)
 
         # create service account credentials object
         creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
