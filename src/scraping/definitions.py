@@ -121,5 +121,5 @@ class DatabaseTables(str, enum.Enum):
 
 class GoogleSheets(str, enum.Enum):
     B64_CREDS = os.environ["SHEETS_API_CREDENTIALS_B64"]
-    SPREADSHEET_ID = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
-    RANGE = "test!A1"
+    SPREADSHEET_ID = "1hVexzlc_1xBUZhwEfPp7fP-yNq1yWvfAWE7HrYhInLc"
+    RANGE = "Coderbyte_Results!A1"
