@@ -17,7 +17,7 @@ def extract_results(
     session = T.login()
 
     # retrieve results for a list of assessments
-    results = T.retrieve_and_union_results(assessments=D.Assessments.ghana_2022_assessments, session=session)
+    results = T.retrieve_and_union_results(assessments=D.Assessments.ghana_2022_october_assessments, session=session)
 
     if pre_process:
         # pre_process results to be inserted into the database

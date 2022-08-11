@@ -132,7 +132,8 @@ def pre_process_results(dataframe: pd.DataFrame) -> pd.DataFrame:
 
     # Correct N/A and empty [] values
     dataframe.replace(["N/A"], np.nan, regex=True, inplace=True)
-    dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
+    
+    #dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
 
     # automatically convert datetimes to datetime64. https://stackoverflow.com/a/41230801/5392289
     dataframe = dataframe.apply(lambda col: pd.to_datetime(col, errors='ignore') if col.dtypes == object else col, axis=0)
