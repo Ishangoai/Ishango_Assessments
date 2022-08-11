@@ -130,9 +130,8 @@ def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> p
         the database.
     """
 
-    # Correct N/A and empty [] values
+    # Correct N/A values
     dataframe.replace(["N/A"], np.nan, regex=True, inplace=True)
-    #dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
 
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
@@ -282,7 +281,7 @@ class GoogleSheets(DataBaseInteraction):
         column_names: list[str] = self.__coderbyte_df.columns.tolist()
         self.__coderbyte_list.insert(0, column_names)
 
-    def sqltosheets(self) -> dict[str, Any]:
+    def sqltosheets(self) -> tuple[dict[str, Any], dict[str, Any]]:
         """
         public method to read, process, and write to Google Sheets.
         """
@@ -302,12 +301,24 @@ class GoogleSheets(DataBaseInteraction):
         sheet = service.spreadsheets()
 
         # write to google sheets
-        update_instructions = sheet.values().update(
+        write_data = sheet.values().update(
             spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value,
             range=D.GoogleSheets.RANGE.value,
             valueInputOption="USER_ENTERED",
             body={"values": self.__coderbyte_list},
         )
-        result: dict[str, Any] = update_instructions.execute()
+        result_write: dict[str, Any] = write_data.execute()
 
-        return result
+        # make first row bold
+        DATA = {'requests': [
+            {'repeatCell': {
+                'range': {'endRowIndex': 1},
+                'cell':  {'userEnteredFormat': {'textFormat': {'bold': True}}},
+                'fields': 'userEnteredFormat.textFormat.bold',
+            }}
+        ]}
+
+        format_data = sheet.batchUpdate(spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value, body=DATA)
+        result_format: dict[str, Any] = format_data.execute()
+
+        return result_write, result_format
