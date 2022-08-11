@@ -329,12 +329,13 @@ class GoogleSheets(DataBaseInteraction):
         )
         result_write: dict[str, Any] = write_data.execute()
 
+        # formatting. https://developers.google.com/sheets/api/samples/formatting
         request_protocol = {
             "requests": [
                 {
                     "repeatCell": {
                         "range": {
-                            "sheetId": "1336822317",
+                            "sheetId": D.GoogleSheets.SHEET_ID.value,
                             "endRowIndex": 1,
                         },
                         "cell": {
@@ -352,7 +353,7 @@ class GoogleSheets(DataBaseInteraction):
                 {
                     "updateSheetProperties": {
                         "properties": {
-                            "sheetId": "1336822317",
+                            "sheetId": D.GoogleSheets.SHEET_ID.value,
                             "gridProperties": {"frozenRowCount": 1},
                         },
                         "fields": "gridProperties.frozenRowCount",
