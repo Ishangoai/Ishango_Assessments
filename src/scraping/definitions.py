@@ -51,10 +51,14 @@ class Assessments(tuple[str], enum.Enum):
     Placeholder for the assessment links
     """
 
-    ghana_2022_assessments = (
+    ghana_2022_may_assessments = (
         "dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz",
         "dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6",
         "dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3",
+    )
+
+    ghana_2022_october_assessments = (
+        "dashboard/ishangoai-nx1aa:data-science-as-4r971n98zo",
     )
 
 
@@ -119,10 +123,11 @@ class DatabaseTables(str, enum.Enum):
     """
 
     # Table(s) to be accessed/created
-    TABLE_ghana_2022 = "ghana2022"
+    TABLE_ghana_2022 = "ghana2022_october"
 
 
 class GoogleSheets(str, enum.Enum):
     B64_CREDS = os.environ["SHEETS_API_CREDENTIALS_B64"]
-    SPREADSHEET_ID = "12kzUd8wHKWDomBz0M2ng-6zQ_t46UblKiSnMebD5su4"
-    RANGE = "test!A1"
+    SPREADSHEET_ID = "1hVexzlc_1xBUZhwEfPp7fP-yNq1yWvfAWE7HrYhInLc"
+    SHEET_ID = "1336822317"
+    RANGE = "Coderbyte_Results!A1"

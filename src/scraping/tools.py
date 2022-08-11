@@ -67,7 +67,9 @@ def login() -> requests.sessions.Session:
         return session
 
 
-def retrieve_and_union_results(assessments: Iterable[str], session: requests.sessions.Session) -> pd.DataFrame:
+def retrieve_and_union_results(
+    assessments: Iterable[str], session: requests.sessions.Session
+) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -100,17 +102,23 @@ def retrieve_and_union_results(assessments: Iterable[str], session: requests.ses
 
         # add url to coding report
         as_id = ":" + assessment.split(":")[1]
-        results["report_url"] = D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
+        results["report_url"] = (
+            D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
+        )
 
         results_list.append(results)
 
     # Union the results of all assessments
-    results_union = functools.reduce(lambda top, bottom: pd.concat([top, bottom]), results_list)
+    results_union = functools.reduce(
+        lambda top, bottom: pd.concat([top, bottom]), results_list
+    )
 
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
+def pre_process_results(
+    dataframe: pd.DataFrame, col_types: dict[str, str]
+) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
@@ -132,15 +140,10 @@ def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> p
 
     # Correct N/A and empty [] values
     dataframe.replace(["N/A"], np.nan, regex=True, inplace=True)
-    dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
-
-    # Convert datetimes to datetime64
-    dataframe["date_joined"] = pd.to_datetime(dataframe["date_joined"], format="%m/%d/%y")
-    dataframe["date_link_sent"] = pd.to_datetime(dataframe["date_link_sent"], format="%m/%d/%y, %I:%M%p")
+    dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]")
 
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
-
     return dataframe
 
 
@@ -177,16 +180,16 @@ class DataBaseInteraction:
     """
 
     def __init__(self, table_name: str, dataframe: pd.DataFrame = None) -> None:
-        self.db_path: str = D.DatabaseConnection.DB_PATH
-        self.host: str = D.DatabaseConnection.HOST
-        self.user: str = D.DatabaseConnection.USER
-        self.password: str = D.DatabaseConnection.PASS
-        self.port: str = D.DatabaseConnection.PORT
-        self.db_name: str = D.DatabaseConnection.DB_NAME
-        self.db_type: str = D.DatabaseTypes.POSTGRES
-        self.table_name: str = table_name
-        self.dataframe: pd.DataFrame = dataframe
-        self.db_engine: sqlalchemy.engine.base.Engine = None
+        self.__db_path: str = D.DatabaseConnection.DB_PATH
+        self.__host: str = D.DatabaseConnection.HOST
+        self.__user: str = D.DatabaseConnection.USER
+        self.__password: str = D.DatabaseConnection.PASS
+        self.__port: str = D.DatabaseConnection.PORT
+        self.__db_name: str = D.DatabaseConnection.DB_NAME
+        self.__db_type: str = D.DatabaseTypes.POSTGRES
+        self._table_name: str = table_name
+        self.__dataframe: pd.DataFrame = dataframe
+        self._db_engine: sqlalchemy.engine.base.Engine = None
 
     def save_results_to_db(self) -> None:
         """
@@ -203,7 +206,7 @@ class DataBaseInteraction:
         self._db_connect()
 
         # Save the dataframe into the database
-        self._dataframe_to_db()
+        self.__dataframe_to_db()
 
     def _db_connect(self) -> None:
 
@@ -213,29 +216,33 @@ class DataBaseInteraction:
         (sqlalchemy.engine.base.Engine) as a property.
         """
 
-        if self.db_type == D.DatabaseTypes.SQLITE:
-            self.db_engine = sqlalchemy.create_engine(f"{self.db_type}:///" + self.db_path)
+        if self.__db_type == D.DatabaseTypes.SQLITE:
+            self._db_engine = sqlalchemy.create_engine(
+                f"{self.__db_type}:///" + self.__db_path
+            )
 
-        elif self.db_type == D.DatabaseTypes.POSTGRES:
-            self.db_engine = sqlalchemy.create_engine(
+        elif self.__db_type == D.DatabaseTypes.POSTGRES:
+            self._db_engine = sqlalchemy.create_engine(
                 "{}://{}:{}@{}:{}/{}".format(
-                    self.db_type,
-                    self.user,
-                    self.password,
-                    self.host,
-                    self.port,
-                    self.db_name,
+                    self.__db_type,
+                    self.__user,
+                    self.__password,
+                    self.__host,
+                    self.__port,
+                    self.__db_name,
                 )
             )
 
-    def _dataframe_to_db(self) -> None:
+    def __dataframe_to_db(self) -> None:
         """
         Takes the concatenated dataframe with the results of all assessments
         and saves it into a local database using the Pandas .to_sql method,
         passing in table_name and db_engine
         """
 
-        self.dataframe.to_sql(name=self.table_name, con=self.db_engine, if_exists="replace", index=False)
+        self.__dataframe.to_sql(
+            name=self._table_name, con=self._db_engine, if_exists="replace", index=False
+        )
 
 
 class GoogleSheets(DataBaseInteraction):
@@ -246,7 +253,7 @@ class GoogleSheets(DataBaseInteraction):
     """
 
     @staticmethod
-    def base64_to_json(b64: str) -> dict[str, str]:
+    def __base64_to_json(b64: str) -> dict[str, str]:
         """
         Decodes base64 string into JSON credentials dictionary
 
@@ -265,40 +272,48 @@ class GoogleSheets(DataBaseInteraction):
         json_dict: dict[str, str] = json.loads(decodedstr)
         return json_dict
 
-    def _read_from_sql(self) -> None:
+    def __read_from_sql(self) -> None:
         """
         reads table from SQL and stores as dataframe in object state
         """
         super()._db_connect()
-        self.coderbyte_df: pd.DataFrame = pd.read_sql(self.table_name, con=self.db_engine)
+        self.__coderbyte_df: pd.DataFrame = pd.read_sql(
+            self._table_name, con=self._db_engine
+        )
 
-    def _process_data(self):
+    def __process_data(self):
         """
         convert non-string values (datetime64[ns], np.NaN) into
         string format inorder to be compatible with Google Sheets
 
         """
-        self.coderbyte_df["date_joined"] = self.coderbyte_df["date_joined"].dt.strftime("%Y-%m-%d")
-        self.coderbyte_df["date_link_sent"] = self.coderbyte_df["date_link_sent"].dt.strftime("%Y-%m-%d")
-        self.coderbyte_df.replace(np.nan, "N/A", inplace=True)
+        self.__coderbyte_df["date_joined"] = self.__coderbyte_df[
+            "date_joined"
+        ].dt.strftime("%Y-%m-%d")
+        self.__coderbyte_df["date_link_sent"] = self.__coderbyte_df[
+            "date_link_sent"
+        ].dt.strftime("%Y-%m-%d")
+        self.__coderbyte_df.replace(np.nan, "N/A", inplace=True)
 
         # convert dataframe into list of lists, with first list being column names
-        self.coderbyte_list: list[list[Any]] = self.coderbyte_df.to_numpy().tolist()
-        column_names: list[str] = self.coderbyte_df.columns.tolist()
-        self.coderbyte_list.insert(0, column_names)
+        self.__coderbyte_list: list[list[Any]] = self.__coderbyte_df.to_numpy().tolist()
+        column_names: list[str] = self.__coderbyte_df.columns.tolist()
+        self.__coderbyte_list.insert(0, column_names)
 
-    def sqltosheets(self) -> dict[str, Any]:
+    def sqltosheets(self) -> tuple[dict[str, Any], dict[str, Any]]:
         """
         public method to read, process, and write to Google Sheets.
         """
-        self._read_from_sql()
-        self._process_data()
+        self.__read_from_sql()
+        self.__process_data()
 
         SCOPES: list[str] = ["https://www.googleapis.com/auth/spreadsheets"]
-        json_dict: dict[str, str] = self.base64_to_json(D.GoogleSheets.B64_CREDS)
+        json_dict: dict[str, str] = self.__base64_to_json(D.GoogleSheets.B64_CREDS)
 
         # create service account credentials object
-        creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+        creds = google.oauth2.service_account.Credentials.from_service_account_info(
+            json_dict, scopes=SCOPES
+        )
 
         # Construct a Resource for interacting with an API
         service = googleapiclient.discovery.build("sheets", "v4", credentials=creds)
@@ -307,12 +322,50 @@ class GoogleSheets(DataBaseInteraction):
         sheet = service.spreadsheets()
 
         # write to google sheets
-        update_instructions = sheet.values().update(
+        write_data = sheet.values().update(
             spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value,
             range=D.GoogleSheets.RANGE.value,
             valueInputOption="USER_ENTERED",
-            body={"values": self.coderbyte_list},
+            body={"values": self.__coderbyte_list},
         )
-        result: dict[str, Any] = update_instructions.execute()
+        result_write: dict[str, Any] = write_data.execute()
 
-        return result
+        # formatting. https://developers.google.com/sheets/api/samples/formatting
+        request_protocol = {
+            "requests": [
+                {
+                    "repeatCell": {
+                        "range": {
+                            "sheetId": D.GoogleSheets.SHEET_ID.value,
+                            "endRowIndex": 1,
+                        },
+                        "cell": {
+                            "userEnteredFormat": {
+                                "horizontalAlignment": "CENTER",
+                                "textFormat": {
+                                    "fontSize": 12,
+                                    "bold": True,
+                                },
+                            }
+                        },
+                        "fields": "userEnteredFormat(textFormat,horizontalAlignment)",
+                    }
+                },
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": D.GoogleSheets.SHEET_ID.value,
+                            "gridProperties": {"frozenRowCount": 1},
+                        },
+                        "fields": "gridProperties.frozenRowCount",
+                    }
+                },
+            ]
+        }
+
+        format_data = sheet.batchUpdate(
+            spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value, body=request_protocol
+        )
+        result_format: dict[str, Any] = format_data.execute()
+
+        return result_write, result_format
