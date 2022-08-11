@@ -67,7 +67,9 @@ def login() -> requests.sessions.Session:
         return session
 
 
-def retrieve_and_union_results(assessments: Iterable[str], session: requests.sessions.Session) -> pd.DataFrame:
+def retrieve_and_union_results(
+    assessments: Iterable[str], session: requests.sessions.Session
+) -> pd.DataFrame:
     """
     Once logged in, the student information and the results of a
     list of tests/challenges must be retrieved and stored into a list
@@ -100,17 +102,23 @@ def retrieve_and_union_results(assessments: Iterable[str], session: requests.ses
 
         # add url to coding report
         as_id = ":" + assessment.split(":")[1]
-        results["report_url"] = D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
+        results["report_url"] = (
+            D.Paths.URL + D.Paths.REPORT + results["username"] + as_id
+        )
 
         results_list.append(results)
 
     # Union the results of all assessments
-    results_union = functools.reduce(lambda top, bottom: pd.concat([top, bottom]), results_list)
+    results_union = functools.reduce(
+        lambda top, bottom: pd.concat([top, bottom]), results_list
+    )
 
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
+def pre_process_results(
+    dataframe: pd.DataFrame, col_types: dict[str, str]
+) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
@@ -208,7 +216,9 @@ class DataBaseInteraction:
         """
 
         if self.__db_type == D.DatabaseTypes.SQLITE:
-            self._db_engine = sqlalchemy.create_engine(f"{self.__db_type}:///" + self.__db_path)
+            self._db_engine = sqlalchemy.create_engine(
+                f"{self.__db_type}:///" + self.__db_path
+            )
 
         elif self.__db_type == D.DatabaseTypes.POSTGRES:
             self._db_engine = sqlalchemy.create_engine(
@@ -229,7 +239,9 @@ class DataBaseInteraction:
         passing in table_name and db_engine
         """
 
-        self.__dataframe.to_sql(name=self._table_name, con=self._db_engine, if_exists="replace", index=False)
+        self.__dataframe.to_sql(
+            name=self._table_name, con=self._db_engine, if_exists="replace", index=False
+        )
 
 
 class GoogleSheets(DataBaseInteraction):
@@ -264,7 +276,9 @@ class GoogleSheets(DataBaseInteraction):
         reads table from SQL and stores as dataframe in object state
         """
         super()._db_connect()
-        self.__coderbyte_df: pd.DataFrame = pd.read_sql(self._table_name, con=self._db_engine)
+        self.__coderbyte_df: pd.DataFrame = pd.read_sql(
+            self._table_name, con=self._db_engine
+        )
 
     def __process_data(self):
         """
@@ -272,8 +286,12 @@ class GoogleSheets(DataBaseInteraction):
         string format inorder to be compatible with Google Sheets
 
         """
-        self.__coderbyte_df["date_joined"] = self.__coderbyte_df["date_joined"].dt.strftime("%Y-%m-%d")
-        self.__coderbyte_df["date_link_sent"] = self.__coderbyte_df["date_link_sent"].dt.strftime("%Y-%m-%d")
+        self.__coderbyte_df["date_joined"] = self.__coderbyte_df[
+            "date_joined"
+        ].dt.strftime("%Y-%m-%d")
+        self.__coderbyte_df["date_link_sent"] = self.__coderbyte_df[
+            "date_link_sent"
+        ].dt.strftime("%Y-%m-%d")
         self.__coderbyte_df.replace(np.nan, "N/A", inplace=True)
 
         # convert dataframe into list of lists, with first list being column names
@@ -292,7 +310,9 @@ class GoogleSheets(DataBaseInteraction):
         json_dict: dict[str, str] = self.__base64_to_json(D.GoogleSheets.B64_CREDS)
 
         # create service account credentials object
-        creds = google.oauth2.service_account.Credentials.from_service_account_info(json_dict, scopes=SCOPES)
+        creds = google.oauth2.service_account.Credentials.from_service_account_info(
+            json_dict, scopes=SCOPES
+        )
 
         # Construct a Resource for interacting with an API
         service = googleapiclient.discovery.build("sheets", "v4", credentials=creds)
@@ -309,16 +329,41 @@ class GoogleSheets(DataBaseInteraction):
         )
         result_write: dict[str, Any] = write_data.execute()
 
-        # make first row bold
-        DATA = {'requests': [
-            {'repeatCell': {
-                'range': {'endRowIndex': 1},
-                'cell':  {'userEnteredFormat': {'textFormat': {'bold': True}}},
-                'fields': 'userEnteredFormat.textFormat.bold',
-            }}
-        ]}
+        request_protocol = {
+            "requests": [
+                {
+                    "repeatCell": {
+                        "range": {
+                            "sheetId": "1336822317",
+                            "endRowIndex": 1,
+                        },
+                        "cell": {
+                            "userEnteredFormat": {
+                                "horizontalAlignment": "CENTER",
+                                "textFormat": {
+                                    "fontSize": 12,
+                                    "bold": True,
+                                },
+                            }
+                        },
+                        "fields": "userEnteredFormat(textFormat,horizontalAlignment)",
+                    }
+                },
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": "1336822317",
+                            "gridProperties": {"frozenRowCount": 1},
+                        },
+                        "fields": "gridProperties.frozenRowCount",
+                    }
+                },
+            ]
+        }
 
-        format_data = sheet.batchUpdate(spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value, body=DATA)
+        format_data = sheet.batchUpdate(
+            spreadsheetId=D.GoogleSheets.SPREADSHEET_ID.value, body=request_protocol
+        )
         result_format: dict[str, Any] = format_data.execute()
 
         return result_write, result_format

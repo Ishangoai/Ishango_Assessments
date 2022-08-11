@@ -50,6 +50,7 @@ class Assessments(tuple[str], enum.Enum):
     """
     Placeholder for the assessment links
     """
+
     ghana_2022_may_assessments = (
         "dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz",
         "dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6",
