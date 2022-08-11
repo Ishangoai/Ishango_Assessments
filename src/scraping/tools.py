@@ -135,7 +135,7 @@ def pre_process_results(dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
 
     # automatically convert datetimes to datetime64. https://stackoverflow.com/a/41230801/5392289
-    dataframe.apply(lambda col: pd.to_datetime(col, errors='ignore') if col.dtypes == object else col, axis=0)
+    dataframe = dataframe.apply(lambda col: pd.to_datetime(col, errors='ignore') if col.dtypes == object else col, axis=0)
 
     # transform columns into final dtypes
     # dataframe = dataframe.astype(dtype=col_types)
