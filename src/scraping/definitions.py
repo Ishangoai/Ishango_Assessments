@@ -79,6 +79,7 @@ class PandasSchemas(enum.Enum):
         "compensation": "object",
         "video_response_uploaded": "bool",
         "date_joined": "datetime64[ns]",
+        "date_link_sent": "datetime64[ns]",
         "report_url": "object",
     }
 
