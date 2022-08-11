@@ -110,7 +110,7 @@ def retrieve_and_union_results(assessments: Iterable[str], session: requests.ses
     return results_union
 
 
-def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> pd.DataFrame:
+def pre_process_results(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     The resulting dataframe needs to be pre-processed to be inserted into a database.
     The different columns types are passed as a list, and the dataframe is
@@ -134,12 +134,11 @@ def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> p
     dataframe.replace(["N/A"], np.nan, regex=True, inplace=True)
     dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]").astype(object)
 
-    # Convert datetimes to datetime64
-    dataframe["date_joined"] = pd.to_datetime(dataframe["date_joined"], format="%m/%d/%y")
-    dataframe["date_link_sent"] = pd.to_datetime(dataframe["date_link_sent"], format="%m/%d/%y, %I:%M%p")
+    # automatically convert datetimes to datetime64. https://stackoverflow.com/a/41230801/5392289
+    dataframe.apply(lambda col: pd.to_datetime(col, errors='ignore') if col.dtypes == object else col, axis=0)
 
     # transform columns into final dtypes
-    dataframe = dataframe.astype(dtype=col_types)
+    # dataframe = dataframe.astype(dtype=col_types)
 
     return dataframe
 
