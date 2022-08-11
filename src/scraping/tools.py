@@ -138,8 +138,9 @@ def pre_process_results(
         the database.
     """
 
-    # Correct N/A values
+    # Correct N/A and empty [] values
     dataframe.replace(["N/A"], np.nan, regex=True, inplace=True)
+    dataframe["mc_answers"] = dataframe["mc_answers"].str.strip("[]")
 
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
