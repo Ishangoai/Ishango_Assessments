@@ -61,6 +61,34 @@ class Assessments(tuple[str], enum.Enum):
     )
 
 
+class PandasSchemas(enum.Enum):
+    """
+    Placeholder for the Pandas dataframe schemas
+    """
+
+    ghana_2022_schema = {
+        "username": "object",
+        "email": "object",
+        "name": "object",
+        "challenges_completed": "Int64",
+        "mc_score": "Int64",
+        "code_score": "Int64",
+        "final_score": "Int64",
+        "mc_answers": "object",
+        "total_points": "Int64",
+        "final_grade": "object",
+        "time_taken": "Int64",
+        "cheated": "object",
+        "status": "object",
+        "action": "object",
+        "compensation": "object",
+        "video_response_uploaded": "bool",
+        "date_joined": "datetime64[ns]",
+        "date_link_sent": "datetime64[ns]",
+        "report_url": "object",
+    }
+
+
 class DatabaseConnection(str, enum.Enum):
     """
     Placeholder for the database connection details
