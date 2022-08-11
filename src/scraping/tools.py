@@ -136,7 +136,6 @@ def pre_process_results(dataframe: pd.DataFrame, col_types: dict[str, str]) -> p
 
     # Convert datetimes to datetime64
     dataframe["date_joined"] = pd.to_datetime(dataframe["date_joined"], format="%m/%d/%y")
-    dataframe["date_link_sent"] = pd.to_datetime(dataframe["date_link_sent"], format="%m/%d/%y, %I:%M%p")
 
     # transform columns into final dtypes
     dataframe = dataframe.astype(dtype=col_types)
@@ -279,7 +278,6 @@ class GoogleSheets(DataBaseInteraction):
 
         """
         self.__coderbyte_df["date_joined"] = self.__coderbyte_df["date_joined"].dt.strftime("%Y-%m-%d")
-        self.__coderbyte_df["date_link_sent"] = self.__coderbyte_df["date_link_sent"].dt.strftime("%Y-%m-%d")
         self.__coderbyte_df.replace(np.nan, "N/A", inplace=True)
 
         # convert dataframe into list of lists, with first list being column names

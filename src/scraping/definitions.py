@@ -52,9 +52,7 @@ class Assessments(tuple[str], enum.Enum):
     """
 
     ghana_2022_assessments = (
-        "dashboard/ishangoai-nx1aa:data-science-as-ypd9gqutaz",
-        "dashboard/ishangoai-nx1aa:data-science-as-zddhq9gim6",
-        "dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3",
+        "dashboard/ishangoai-nx1aa:data-science-as-4r971n98zo",
     )
 
 
@@ -81,7 +79,6 @@ class PandasSchemas(enum.Enum):
         "compensation": "object",
         "video_response_uploaded": "bool",
         "date_joined": "datetime64[ns]",
-        "date_link_sent": "datetime64[ns]",
         "report_url": "object",
     }
 
@@ -119,7 +116,7 @@ class DatabaseTables(str, enum.Enum):
     """
 
     # Table(s) to be accessed/created
-    TABLE_ghana_2022 = "ghana2022"
+    TABLE_ghana_2022 = "ghana2022_october"
 
 
 class GoogleSheets(str, enum.Enum):
