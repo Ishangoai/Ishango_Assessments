@@ -57,9 +57,7 @@ class Assessments(tuple[str], enum.Enum):
         "dashboard/ishangoai-nx1aa:data-science-as-ms3m246vv3",
     )
 
-    ghana_2022_october_assessments = (
-        "dashboard/ishangoai-nx1aa:data-science-as-4r971n98zo",
-    )
+    ghana_2022_october_assessments = ("dashboard/ishangoai-nx1aa:data-science-as-4r971n98zo",)
 
 
 class PandasSchemas(enum.Enum):
