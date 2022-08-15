@@ -1,11 +1,11 @@
 repos:
 -   repo: https://github.com/ambv/black
-    rev: 22.3.0
+    rev: 22.6.0
     hooks:
     - id: black
 
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 3.9.2
     hooks:
     - id: flake8
       args: ['--config=setup.cfg']
