@@ -1,7 +1,7 @@
 pandas==1.4.3
 psycopg2-binary==2.9.3
 requests==2.28.1
-types-requests==2.28.8
+types-requests==2.28.11.15
 sqlalchemy==1.4.40
 urllib3==1.26.11
 Werkzeug==2.2.2
